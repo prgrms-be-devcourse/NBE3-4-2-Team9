@@ -12,20 +12,19 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 // 게시판 엔티티
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true) // 기본 생성자 강제 추가
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자 강제 추가
 //상속 관계로 테이블 정의시 전략 설정
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
-@Table(name="Board")
-@AllArgsConstructor
-public class Post extends BaseEntity {
+@Table(name="board")
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class Board extends BaseEntity {
 
     // board_id: 게시글의 고유 식별자(PK, Auto Increment)
     @Id

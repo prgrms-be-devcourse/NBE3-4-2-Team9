@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 // DTYPE 값 설정
-@DiscriminatorValue("Recruitment")
-public class RecruitmentBoard extends Post {
+@DiscriminatorValue("recruitment")
+public class RecruitmentBoard extends Board {
 
     //모집 상태
     @Column(nullable = false)

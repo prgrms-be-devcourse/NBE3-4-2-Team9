@@ -62,5 +62,46 @@ public class CategoryService {
         }
     }
 
-    // TODO : 카테고리 수정 추가
+    // 카테고리 수정
+    public CategoryResponse updateCategory(Category category) {
+        try {
+            // 인증된 사용자 정보 가져오기
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            // UserRole 역할 정보 가져오기
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+            // Enum으로 반환
+            UserRole userRole = UserRole.fromString(userDetails.getRole());
+
+            // 관리자 권한 체크
+            if (!userRole.isAdmin()) {
+                throw new GlobalException(GlobalErrorCode.UNAUTHORIZATION_USER);
+            }
+
+            // 관리자일 경우 기존 카테고리 조회
+            Category findCategory = categoryRepository.findById(category.getId())
+                    .orElseThrow(() -> new GlobalException(GlobalErrorCode.CATEGORY_NOT_FOUND));
+
+            // 변경된 카테고리 객체
+            Category updateCategory = Category.builder()
+                    .id(findCategory.getId())
+                    .name(category.getName())
+                    .build();
+
+            // 변경된 카테고리 저장
+            Category saveCategory = categoryRepository.save(updateCategory);
+
+            // 응답 객체로 변환 후 반환
+            return mappingCategory(saveCategory);
+
+        } catch (DataAccessException e) {
+            // 데이터베이스 예외 처리
+            throw new GlobalException(GlobalErrorCode.DATABASE_ACCESS_ERROR);
+
+        } catch (Exception e) {
+            // 기타 예외 처리 (서버 오류로 예외 처리)
+            throw new GlobalException(GlobalErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

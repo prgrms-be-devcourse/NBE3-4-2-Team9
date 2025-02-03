@@ -1,20 +1,19 @@
 package com.backend.domain.board.service;
 
-import com.backend.domain.board.dto.PostCreateRequestDto;
-import com.backend.domain.board.dto.PostResponseDto;
-import com.backend.domain.board.entity.Post;
-import com.backend.domain.board.repository.PostRepository;
-
+import com.backend.domain.board.dto.BoardCreateRequest;
+import com.backend.domain.board.dto.BoardResponse;
+import com.backend.domain.board.entity.Board;
+import com.backend.domain.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class PostService {
+public class BoardService {
 
     // PostRepository, CategoryRepository, JobPostingRepository 주입
-    private final PostRepository postRepository;
+    private final BoardRepository boardRepository;
     // TODO: category, jobposting 미구현, 구현 이후 다시 작업
 //    private final CategoryRepository categoryRepository;
 //    private final JobPostingRepository jobPostingRepository;
@@ -63,28 +62,28 @@ public class PostService {
 //    }
 
     // 게시글 상세 조회 (DTO 적용)
-    public PostResponseDto getPostById(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() ->
+    public BoardResponse getPostById(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 게시글이 존재하지 않습니다. ID: " + id));
-        return PostResponseDto.fromEntity(post);
+        return BoardResponse.fromEntity(board);
     }
 
     // 게시글 수정 (DTO 적용)
     @Transactional
-    public PostResponseDto updatePost(Long id, PostCreateRequestDto requestDto) {
-        Post post = postRepository.findById(id).orElseThrow(() ->
+    public BoardResponse updatePost(Long id, BoardCreateRequest requestDto) {
+        Board board = boardRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 게시물이 존재하지 않습니다. ID: " + id));
 
-        post.updatePost(requestDto.getSubject(), requestDto.getContent());
+        board.updatePost(requestDto.getSubject(), requestDto.getContent());
 
-        return PostResponseDto.fromEntity(post); // 게시글 저장
+        return BoardResponse.fromEntity(board); // 게시글 저장
     }
 
     // 게시글 삭제
     @Transactional
     public void deletePost(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() ->
+        Board board = boardRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 게시글이 존재하지 않습니다. ID: " + id));
-        postRepository.delete(post);
+        boardRepository.delete(board);
     }
 }

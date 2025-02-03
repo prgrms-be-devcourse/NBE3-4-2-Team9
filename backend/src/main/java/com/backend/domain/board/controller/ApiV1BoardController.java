@@ -2,7 +2,7 @@ package com.backend.domain.board.controller;
 
 import com.backend.domain.board.dto.BoardCreateRequest;
 import com.backend.domain.board.dto.BoardResponse;
-import com.backend.domain.board.service.PostService;
+import com.backend.domain.board.service.BoardService;
 import com.backend.global.response.GenericResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiV1BoardController {
 
 	// PostService 주입
-	private final PostService postService;
+	private final BoardService postService;
 
 	// 게시글 생성 (DTO 적용)
 	// TODO: category, jobposting 미구현, 구현 이후 다시 작업

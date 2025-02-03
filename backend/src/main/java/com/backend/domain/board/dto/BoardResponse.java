@@ -1,6 +1,6 @@
 package com.backend.domain.board.dto;
 
-import com.backend.domain.board.entity.Post;
+import com.backend.domain.board.entity.Board;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostResponseDto {
+public class BoardResponse {
     private Long id;
     private String subject;
     private String content;
@@ -19,15 +19,15 @@ public class PostResponseDto {
     private ZonedDateTime createdAt;
 
     // Entity -> DTO 변환(Builder 활용)
-    public static PostResponseDto fromEntity(Post post){
-        return PostResponseDto.builder()
-                .id(post.getBoardId())
-                .subject(post.getSubject())
-                .content(post.getContent())
+    public static BoardResponse fromEntity(Board board){
+        return BoardResponse.builder()
+                .id(board.getBoardId())
+                .subject(board.getSubject())
+                .content(board.getContent())
             // TODO: category, jobposting 미구현, 구현 이후 다시 작업
 //                .categoryId(post.getCategoryId().getId())
 //                .jobId(post.getJobId().getId())
-                .createdAt(post.getCreatedAt())
+                .createdAt(board.getCreatedAt())
                 .build();
 
     }

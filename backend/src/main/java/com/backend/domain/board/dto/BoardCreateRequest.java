@@ -1,6 +1,5 @@
 package com.backend.domain.board.dto;
 
-import com.backend.domain.board.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostCreateRequestDto {
+public class BoardCreateRequest {
     private String subject;
     private String content;
 

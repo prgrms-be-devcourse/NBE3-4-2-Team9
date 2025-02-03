@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DiscriminatorValue(value = "Free")
-public class FreeBoard extends Post {
+@DiscriminatorValue(value = "free")
+public class FreeBoard extends Board {
 
     public FreeBoard(Long boardId, String subject, String content) {
         super(boardId, subject, content);

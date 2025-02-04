@@ -1,4 +1,4 @@
-package com.backend.global.category;
+package com.backend.domain.category;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -42,19 +42,19 @@ class CategoryControllerTest {
     private ObjectMapper objectMapper;
 
     // CategoryController가 의존하는 서비스 빈을 Mock 객체로 주입
-    @MockBean
+    @MockitoBean
     private CategoryService categoryService;
 
     // Jwt 관련 빈들은 SecurtiyConfig에 의해 사용, 여기선 Mock 객체로 주입
-    @MockBean
+    @MockitoBean
     private JwtUtil jwtUtil;
-    @MockBean
+    @MockitoBean
     private RedisRepository redisRepository;
-    @MockBean
+    @MockitoBean
     private CustomOAuth2UserService customOAuth2UserService;
-    @MockBean
+    @MockitoBean
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-    @MockBean
+    @MockitoBean
     private OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
     private Category category;

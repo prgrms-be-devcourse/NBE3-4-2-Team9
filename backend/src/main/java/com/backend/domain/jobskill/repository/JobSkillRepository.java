@@ -31,4 +31,11 @@ public interface JobSkillRepository {
 	 * @implSpec JobSkill 저장 메서드 입니다.
 	 */
 	JobSkill save(JobSkill jobSkill);
+
+	/**
+	 * @param name JobSkill name
+	 * @return {@link Optional<JobSkill>}
+	 * @implSpec name 값으로 조회 메서드 입니다.
+	 */
+	Optional<JobSkill> findByName(String name);
 }

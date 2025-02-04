@@ -24,4 +24,7 @@ public class JobSkillRepositoryImpl implements JobSkillRepository{
 	public JobSkill save(JobSkill jobSkill) {
 		return jobSkillJpaRepository.save(jobSkill);
 	}
+
+	@Override
+	public Optional<JobSkill> findByName(String name) { return jobSkillJpaRepository.findByName(name); }
 }

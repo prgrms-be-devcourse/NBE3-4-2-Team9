@@ -1,21 +1,27 @@
-package com.backend;
+package com.backend.domain.post;
 
-import com.backend.domain.post.entity.Post;
-import com.backend.domain.post.repository.PostRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.backend.domain.category.entity.Category;
 import com.backend.domain.category.repository.CategoryRepository;
+import com.backend.domain.post.entity.Post;
+import com.backend.domain.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@DataJpaTest
+@SpringBootTest
+@ActiveProfiles("test")
+@AutoConfigureMockMvc
+@Transactional
 class PostRepositoryTest {
 
     @Autowired
@@ -30,8 +36,7 @@ class PostRepositoryTest {
     @BeforeEach
     void setUp() {
         freeBoardCategory = categoryRepository.save(Category.builder().name("자유게시판").build());
-        recruitmentBoardCategory = categoryRepository.save(
-                Category.builder().name("모집게시판").build());
+        recruitmentBoardCategory = categoryRepository.save(Category.builder().name("모집게시판").build());
 
         // 자유게시판 게시글 저장
         postRepository.save(new Post("자유게시판 글1", "내용1", freeBoardCategory));

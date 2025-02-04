@@ -86,10 +86,9 @@ public class ApiV1UserControllerTest {
     void test1() throws Exception {
         testUser.modifyProfile("자기소개", "직업");
         testUser.getJobSkills().add(jobSkill1);
-        userRepository.save(testUser);
 
         mockMvc.perform(get("/api/v1/users/{user_id}", testUser.getId())
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.code").value(200))
@@ -106,7 +105,7 @@ public class ApiV1UserControllerTest {
     @DisplayName("프로필 조회 실패 - 비로그인 사용자")
     void test2() throws Exception {
         mockMvc.perform(get("/api/v1/users/{user_id}", testUser.getId())
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(401))
@@ -118,7 +117,7 @@ public class ApiV1UserControllerTest {
     @CustomWithMock
     void test3() throws Exception {
         mockMvc.perform(get("/api/v1/users/{user_id}", otherUser.getId())
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(4003))
@@ -130,8 +129,8 @@ public class ApiV1UserControllerTest {
     @CustomWithMock
     void test4() throws Exception {
         List<JobSkillRequest> jobSkills = List.of(
-            new JobSkillRequest("직무1"),
-            new JobSkillRequest("직무2")
+                new JobSkillRequest("직무1"),
+                new JobSkillRequest("직무2")
         );
 
         UserModifyProfileRequest request = new UserModifyProfileRequest();

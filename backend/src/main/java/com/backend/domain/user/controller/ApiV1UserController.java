@@ -11,8 +11,12 @@ import com.backend.global.security.custom.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,7 +27,7 @@ public class ApiV1UserController {
 
     @GetMapping("/users/{user_id}")
     public GenericResponse<UserGetProfileResponse> getProfile(
-            @PathVariable Long user_id,
+            @PathVariable(name = "user_id") Long user_id,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
             ) {
         SiteUser siteUser = userService.getUserById(user_id);
@@ -45,7 +49,7 @@ public class ApiV1UserController {
 
     @PatchMapping("/users/{user_id}")
     public GenericResponse<Void> modifyProfile(
-            @PathVariable Long user_id,
+            @PathVariable(name = "user_id") Long user_id,
             @RequestBody UserModifyProfileRequest req,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {

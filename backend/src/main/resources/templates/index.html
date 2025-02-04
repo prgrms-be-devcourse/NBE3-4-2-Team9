@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Chat</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #eceff1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 900px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .chat-header {
+      background: #128ff2;
+      color: white;
+      padding: 15px;
+      font-size: 1.5em;
+      text-align: center;
+      font-weight: bold;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .chat-box {
+      display: none;
+      flex-direction: column;
+      height: 75vh;
+    }
+
+    .chat-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .chat-controls input {
+      flex: 1;
+      padding: 10px;
+      font-size: 1.1em;
+      border: 1px solid #bbb;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .chat-controls button {
+      padding: 10px 15px;
+      font-size: 1em;
+      background: #ff9800;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .chat-controls button:hover {
+      background: #e68900;
+    }
+
+    #messageArea {
+      list-style: none;
+      padding: 15px;
+      margin: 10px 0;
+      height: 500px;
+      overflow-y: auto;
+      border-radius: 5px;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      border: 2px solid #ccc;
+    }
+
+    .message {
+      max-width: 75%;
+      padding: 12px;
+      border-radius: 10px;
+      margin: 8px 0;
+      position: relative;
+      font-size: 1.1em;
+    }
+
+    .my-message {
+      background: #128ff2;
+      color: white;
+      align-self: flex-end;
+    }
+
+    .other-message {
+      background: #e5e5e5;
+      align-self: flex-start;
+    }
+
+    .message .timestamp {
+      font-size: 0.9em;
+      color: #777;
+      position: absolute;
+      bottom: -18px;
+      right: 5px;
+    }
+
+    .message-form {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .message-form input {
+      flex: 1;
+      padding: 12px;
+      font-size: 1.1em;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .message-form button {
+      padding: 12px 18px;
+      font-size: 1.1em;
+      background: #128ff2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .message-form button:hover {
+      background: #0b7dda;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="chat-header">WebSocket Chat</div>
+
+  <div id="connect-section" class="chat-controls">
+    <input type="text" id="userId" placeholder="Enter user ID">
+    <button onclick="connect()">Connect</button>
+  </div>
+
+  <div id="chat-box" class="chat-box">
+    <div class="chat-controls">
+      <input type="text" id="boardId" placeholder="Enter Board ID">
+      <button onclick="subscribeToChat()">Join Chat</button>
+    </div>
+
+    <ul id="messageArea"></ul>
+
+    <form class="message-form" onsubmit="sendMessage(event)">
+      <input type="text" id="message" placeholder="Type a message...">
+      <button type="submit">Send</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+<script>
+  let stompClient = null;
+  let boardId = null;
+  let userId = null;
+  let subscription = null;
+
+  function connect() {
+    userId = document.getElementById("userId").value.trim();
+    if (!userId) {
+      alert("Please enter a user ID.");
+      return;
+    }
+
+    document.getElementById("connect-section").style.display = "none";
+    document.getElementById("chat-box").style.display = "flex";
+
+    const socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function () {
+      console.log("✅ Connected");
+    }, function (error) {
+      console.error("❌ Connection error:", error);
+    });
+  }
+
+  function subscribeToChat() {
+    const newBoardId = document.getElementById("boardId").value.trim();
+    if (!newBoardId) {
+      alert("Please enter a Board ID.");
+      return;
+    }
+
+    if (newBoardId === boardId) {
+      console.log("🔄 Already joined this chat room. Skipping re-subscription.");
+      return; // ✅ 같은 boardId면 중복 구독 방지
+    }
+
+    if (subscription) {
+      subscription.unsubscribe(); // ✅ 기존 구독 해제
+      console.log("🔄 Unsubscribed from previous chat room.");
+    }
+
+    boardId = newBoardId; // ✅ 새로운 boardId 업데이트
+    document.getElementById("messageArea").innerHTML = ""; // ✅ 기존 메시지 삭제
+
+    const topicPath = `/topic/${boardId}`;
+    subscription = stompClient.subscribe(topicPath, function (message) {
+      console.log("📩 New message received:", message.body);
+      displayMessage(JSON.parse(message.body));
+    });
+
+    console.log(`✅ Subscribed to: ${topicPath}`);
+
+    loadChatHistory(boardId);
+  }
+
+  function sendMessage(event) {
+    event.preventDefault();
+
+    const messageContent = document.getElementById("message").value.trim();
+    if (!messageContent || !stompClient || !boardId || !userId) {
+      return;
+    }
+
+    const message = {
+      type: "CHAT",
+      userId: parseInt(userId),
+      content: messageContent
+    };
+
+    stompClient.send(`/pub/msg/${boardId}`, {}, JSON.stringify(message));
+    document.getElementById("message").value = "";
+  }
+
+  function displayMessage(chat) {
+    const messageArea = document.getElementById("messageArea");
+    const messageElement = document.createElement("li");
+    messageElement.classList.add("message");
+
+    const isMyMessage = chat.userId === parseInt(userId);
+    messageElement.classList.add(isMyMessage ? "my-message" : "other-message");
+    messageElement.innerHTML = `<strong>User ${chat.userId}</strong>: ${chat.content}
+    <!--JWT토큰을 이용한 세션을 통해서 닉네임으로 변경 예정-->
+    <!--messageElement.innerHTML = \`<strong>${chat.username}</strong>: ${chat.content}-->
+      <span class="timestamp">${new Date(chat.createdAt).toLocaleTimeString()}</span>`;
+
+    messageArea.appendChild(messageElement);
+    messageArea.scrollTop = messageArea.scrollHeight;
+  }
+
+  function loadChatHistory(boardId) {
+    fetch(`/api/v1/chat/list/${boardId}`)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("messageArea").innerHTML = "";
+      if (data.success) {
+        data.data.chats.forEach(chat => displayMessage(chat));
+      }
+    })
+    .catch(error => console.error("❌ Error fetching chat history:", error));
+  }
+</script>
+
+</body>
+</html>
+

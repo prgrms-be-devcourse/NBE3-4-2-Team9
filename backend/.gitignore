@@ -44,3 +44,4 @@ application.yml
 application-build.yml
 application-oauth.yml
 .env
+src/main/generated/

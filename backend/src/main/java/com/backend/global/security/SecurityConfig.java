@@ -79,7 +79,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/h2-console/**", "/api/v1/chat/**", "/ws/**").permitAll()
                         .requestMatchers("/login/oauth2/code/kakao", "/oauth2/authorization/kakao").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/category").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/login/oauth2/code/kakao", "/oauth2/authorization/kakao").permitAll()

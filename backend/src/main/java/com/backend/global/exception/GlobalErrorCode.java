@@ -30,6 +30,9 @@ public enum GlobalErrorCode {
     // 카테고리 도메인 에러 코드
     DATABASE_ACCESS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 3001, "데이터베이스 접근 중 오류가 발생했습니다."),
 
+    // 웹 소켓 에러 코드
+    EXCEPTION_IN_WEBSOCKET(HttpStatus.UNAUTHORIZED, 6001, "웹 소켓 연결 중에 예외가 발생하였습니다."),
+
     //공통 서버 에러 코드 500
     NOT_VALID(HttpStatus.BAD_REQUEST, 5001, "요청하신 유효성 검증에 실패하였습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 5002, "서버 내부 오류가 발생하였습니다.");

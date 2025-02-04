@@ -5,11 +5,8 @@ import com.backend.global.baseentity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -48,7 +45,12 @@ public class SiteUser extends BaseEntity {
     private String profileImg;  // 카카오 프로필 이미지 URL
 
     @Builder.Default
-    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.REMOVE)
+    @ManyToMany
+    @JoinTable(
+            name = "user_job_skill",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "job_skill_id")
+    )
     private List<JobSkill> jobSkills = new ArrayList<>();
 
     public void modifyProfile(String introduction, String job) {

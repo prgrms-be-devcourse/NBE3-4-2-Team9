@@ -1,6 +1,5 @@
 package com.backend.domain.jobskill.entity;
 
-import com.backend.domain.user.entity.SiteUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,13 +21,5 @@ public class JobSkill {
 
 	@Column(name = "job_skill_code", unique = true, nullable = false)
 	private Integer code;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private SiteUser siteUser;
-
-	public void setSiteUser(SiteUser siteUser) {
-		this.siteUser = siteUser;
-	}
 
 }

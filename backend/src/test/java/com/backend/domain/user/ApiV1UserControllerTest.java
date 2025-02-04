@@ -86,7 +86,6 @@ public class ApiV1UserControllerTest {
     @CustomWithMock
     void test1() throws Exception {
         testUser.modifyProfile("자기소개", "직업");
-        jobSkill1.setSiteUser(testUser);
         testUser.getJobSkills().add(jobSkill1);
 
         mockMvc.perform(get("/api/v1/users/{user_id}", testUser.getId())
@@ -148,6 +147,7 @@ public class ApiV1UserControllerTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.code").value(200))
                 .andDo(MockMvcResultHandlers.print());
+
         SiteUser updatedUser = userRepository.findById(testUser.getId()).orElseThrow();
         assertThat(updatedUser.getIntroduction()).isEqualTo("자기소개수정");
         assertThat(updatedUser.getJob()).isEqualTo("직업수정");

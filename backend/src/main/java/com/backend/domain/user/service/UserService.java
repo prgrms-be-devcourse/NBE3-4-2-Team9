@@ -36,15 +36,11 @@ public class UserService {
         SiteUser user = getUserById(siteUser.getId());
         
         if (req.getJobSkills() != null) {
-            // 기존 직무기술 연결 해제
-            user.getJobSkills().forEach(jobSkill -> jobSkill.setSiteUser(null));
             user.getJobSkills().clear();
-            
-            // 새로운 직무기술 연결
+
             req.getJobSkills().forEach(jobSkillReq -> {
                 JobSkill jobSkill = jobSkillRepository.findByName(jobSkillReq.getName())
-                    .orElseThrow(() -> new GlobalException(GlobalErrorCode.INVALID_JOB_SKILL));
-                jobSkill.setSiteUser(user);
+                        .orElseThrow(() -> new GlobalException(GlobalErrorCode.INVALID_JOB_SKILL));
                 user.getJobSkills().add(jobSkill);
             });
         }

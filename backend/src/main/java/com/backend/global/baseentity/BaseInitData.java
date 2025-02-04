@@ -36,7 +36,15 @@ public class BaseInitData {
                 .userRole(UserRole.ROLE_ADMIN.toString())
                 .build();
 
+        SiteUser user1 = SiteUser.builder()
+                .email("user@user.com")
+                .name("user")
+                .password(passwordEncoder.encode("user"))
+                .userRole(UserRole.ROLE_USER.toString())
+                .build();
+
         userRepository.save(siteUser);
+        userRepository.save(user1);
 
         return siteUser;
     }

@@ -22,7 +22,6 @@ public class ApiV1UserController {
     private final UserService userService;
 
     @GetMapping("/users/{user_id}")
-    @Transactional(readOnly = true)
     public GenericResponse<UserGetProfileResponse> getProfile(
             @PathVariable Long user_id,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
@@ -45,7 +44,6 @@ public class ApiV1UserController {
     }
 
     @PatchMapping("/users/{user_id}")
-    @Transactional
     public GenericResponse<Void> modifyProfile(
             @PathVariable Long user_id,
             @RequestBody UserModifyProfileRequest req,

@@ -42,4 +42,10 @@ public interface JobPostingRepository {
 	 */
 	Page<JobPostingPageResponse> findAll(JobPostingSearchCondition jobPostingSearchCondition,
 		Pageable pageable);
+
+	/**
+	 * @return {@link JobPosting}
+	 * @implSpec JobPosting 페이징 동적 조회 메서드 입니다.
+	 */
+	boolean existsById(Long jobPostingId);
 }

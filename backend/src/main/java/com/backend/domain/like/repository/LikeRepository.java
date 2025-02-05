@@ -19,10 +19,11 @@ public interface LikeRepository {
 	Like save(Like like);
 
 	/**
+	 * @param siteUserId siteUserId
 	 * @param jobPostingId jobPostingId
 	 * @param likeType likeType {@link LikeType}
 	 * @return {@link Boolean} 데이터 존재할 시 true, 존재하지 않을 때 false
 	 * @implSpec Like exists 메서드 입니다.
 	 */
-	boolean existsByJobPostingId(Long jobPostingId, LikeType likeType);
+	boolean existsByJobPostingId(Long siteUserId, Long jobPostingId, LikeType likeType);
 }

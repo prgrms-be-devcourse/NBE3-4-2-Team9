@@ -17,7 +17,9 @@ public class LikeRepositoryImpl implements LikeRepository {
 	}
 
 	@Override
-	public boolean existsByJobPostingId(Long jobPostingId, LikeType likeType) {
-		return likeJpaRepository.existsByJobPostingIdAndLikeType(jobPostingId, likeType);
+	public boolean existsByJobPostingId(Long siteUserId, Long jobPostingId, LikeType likeType) {
+		return likeJpaRepository.existsByAndSiteUserIdAndJobPostingIdAndLikeType(siteUserId,
+			jobPostingId,
+			likeType);
 	}
 }

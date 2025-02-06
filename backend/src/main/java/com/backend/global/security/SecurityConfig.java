@@ -14,9 +14,10 @@ import com.backend.standard.util.AuthResponseUtil;
 import com.backend.standard.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.util.*;
-
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -33,8 +34,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -67,7 +66,7 @@ public class SecurityConfig {
     private static final Map<HttpMethod, List<String>> PUBLIC_URLS = new HashMap<>();
     static {
         PUBLIC_URLS.put(HttpMethod.GET, Arrays.asList(
-                "/api/v1/job-posting/**",
+                "/api/v1/job-posting",
                 "/h2-console/**",
                 "/login/oauth2/code/kakao",
                 "/oauth2/authorization/kakao",
@@ -102,9 +101,11 @@ public class SecurityConfig {
                     );
 
                     // 나머지 특정 권한이 필요한 URL들
-                    authorizeRequests.requestMatchers(HttpMethod.POST, "/api/v1/category").hasRole("ADMIN")
-                            .requestMatchers(HttpMethod.PUT, "/api/v1/category/**").hasRole("ADMIN")
-                            .anyRequest().authenticated();
+                    authorizeRequests
+                        .requestMatchers(HttpMethod.POST, "/api/v1/like").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/category").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/category/**").hasRole("ADMIN")
+                        .anyRequest().authenticated();
                 })
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

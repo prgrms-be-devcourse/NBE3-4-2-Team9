@@ -37,6 +37,10 @@ public enum GlobalErrorCode {
 	INVALID_CATEGORY_ID(HttpStatus.BAD_REQUEST, 3003, "카테고리 ID가 유효하지 않습니다."),
 	ID_MISMATCH(HttpStatus.BAD_REQUEST, 3004, "카테고리 ID가 일치하지 않습니다."),
 
+	// 관심 에러 코드 7001 ~
+	ALREADY_LIKE(HttpStatus.BAD_REQUEST, 7001, "이미 관심을 추가하였습니다."),
+	NOT_SUPPORT_TYPE(HttpStatus.BAD_REQUEST, 7002, "지원하지 않는 관심 타입 입니다."),
+
     // 웹 소켓 에러 코드
     EXCEPTION_IN_WEBSOCKET(HttpStatus.UNAUTHORIZED, 6001, "웹 소켓 연결 중에 예외가 발생하였습니다."),
 
@@ -49,7 +53,7 @@ public enum GlobalErrorCode {
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, 7002, "토큰이 존재하지 않습니다.");
 
 
-    private final HttpStatus httpStatus;
+	private final HttpStatus httpStatus;
 	private final int code;
 	private final String message;
 }

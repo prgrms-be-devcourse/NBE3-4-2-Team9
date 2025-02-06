@@ -36,4 +36,9 @@ public class JobPostingRepositoryImpl implements JobPostingRepository {
 	public Page<JobPostingPageResponse> findAll(JobPostingSearchCondition jobPostingSearchCondition, Pageable pageable) {
 		return jobPostingQueryRepository.findAll(jobPostingSearchCondition, pageable);
 	}
+
+	@Override
+	public boolean existsById(Long jobPostingId) {
+		return jobPostingJpaRepository.existsById(jobPostingId);
+	}
 }

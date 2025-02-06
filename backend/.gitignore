@@ -16,7 +16,7 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-**/main/resources/application.yml
+**/main/resources/*.yml
 **/test/resources/application.yml
 ../.idea
 

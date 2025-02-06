@@ -50,7 +50,9 @@ public record JobPostingDetailResponse(
 
 	List<JobSkillResponse> jobSkillList, //직무 스킬
 
-	Long applyCnt //지원자 수
+	Long applyCnt, //지원자 수
+
+	boolean isLike //관심 여부
 ) {
 
 }

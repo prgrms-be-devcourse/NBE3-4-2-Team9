@@ -1,6 +1,7 @@
 package com.backend.domain.jobposting.entity;
 
-import com.backend.domain.jobskill.entity.JobSkill;
+import com.backend.domain.like.entity.Like;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -12,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -65,9 +67,13 @@ public class JobPosting {
 	@Embedded
 	private Salary salary; //연봉
 
-	@OneToMany
-	private List<JobSkill> jobSkillList;
-
 	@Column(name = "apply_cnt")
 	private Long applyCnt; //지원자 수
+
+	@Builder.Default
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "jobPosting")
+	private List<JobPostingJobSkill> jobPostingJobSkillList = new ArrayList<>();
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "jobPosting")
+	private List<Like> likeList;
 }

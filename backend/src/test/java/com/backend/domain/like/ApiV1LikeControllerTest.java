@@ -5,11 +5,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.backend.domain.jobposting.entity.JobPosting;
 import com.backend.domain.like.domain.LikeType;
 import com.backend.domain.like.dto.LikeCreateRequest;
+import com.backend.domain.like.entity.Like;
 import com.backend.domain.like.repository.LikeRepository;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.domain.user.repository.UserRepository;
+import com.backend.global.exception.GlobalErrorCode;
 import com.backend.global.security.custom.CustomUserDetails;
 import com.backend.standard.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -94,4 +97,35 @@ public class ApiV1LikeControllerTest {
 			.andExpect(jsonPath("$.data.likeType").value(givenRequest.likeType().toString()));
 	}
 
+	@DisplayName("채용 공고 관심이 이미 존재할 때 실패 테스트")
+	@Test
+	void save_job_posting_like_fail() throws Exception {
+		//given
+		LikeCreateRequest givenRequest = LikeCreateRequest.builder()
+			.likeType(LikeType.JOB_POSTING)
+			.targetId(1L)
+			.build();
+
+		SiteUser givenSiteUser2 = userRepostiory.findByEmail("testEmail1@naver.com").get();
+
+		likeRepository.save(Like.builder()
+			.siteUser(givenSiteUser2)
+			.likeType(LikeType.JOB_POSTING)
+			.jobPosting(JobPosting.builder()
+				.id(1L)
+				.build())
+			.build());
+
+		//when
+		ResultActions resultActions = mockMvc.perform(post("/api/v1/like")
+				.contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer " + accessToken2)
+				.content(objectMapper.writeValueAsString(givenRequest)))
+			.andExpect(status().isBadRequest());
+
+		//then
+		resultActions
+			.andExpect(jsonPath("$.code").value(GlobalErrorCode.ALREADY_LIKE.getCode()))
+			.andExpect(jsonPath("$.message").value(GlobalErrorCode.ALREADY_LIKE.getMessage()));
+	}
 }

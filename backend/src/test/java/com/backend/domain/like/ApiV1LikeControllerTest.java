@@ -16,6 +16,8 @@ import com.backend.global.exception.GlobalErrorCode;
 import com.backend.global.security.custom.CustomUserDetails;
 import com.backend.standard.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -163,6 +165,27 @@ public class ApiV1LikeControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "Bearer " + accessToken2)
 				.content(objectMapper.writeValueAsString(givenRequest)))
+			.andExpect(status().isBadRequest());
+
+		//then
+		resultActions
+			.andExpect(jsonPath("$.code").value(GlobalErrorCode.NOT_VALID.getCode()))
+			.andExpect(jsonPath("$.message").value(GlobalErrorCode.NOT_VALID.getMessage()));
+	}
+
+	@DisplayName("관심 저장시 likeType이 존재하지 않는 값일 때 실패 테스트")
+	@Test
+	void save_like_like_type_not_valid_fail() throws Exception {
+		//given
+		Map<String, Object> param = new HashMap<>();
+		param.put("targetId", 1L);
+		param.put("likeType", "testLike");
+
+		//when
+		ResultActions resultActions = mockMvc.perform(post("/api/v1/like")
+				.contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer " + accessToken2)
+				.content(objectMapper.writeValueAsString(param)))
 			.andExpect(status().isBadRequest());
 
 		//then

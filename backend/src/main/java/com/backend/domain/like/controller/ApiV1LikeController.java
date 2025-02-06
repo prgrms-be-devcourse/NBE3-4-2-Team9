@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/like")
-public class LikeController {
+public class ApiV1LikeController {
 
 	private final LikeService likeService;
 

@@ -149,4 +149,25 @@ public class ApiV1LikeControllerTest {
 			.andExpect(jsonPath("$.code").value(GlobalErrorCode.NOT_VALID.getCode()))
 			.andExpect(jsonPath("$.message").value(GlobalErrorCode.NOT_VALID.getMessage()));
 	}
+
+	@DisplayName("관심 저장시 likeType이 null일 때 실패 테스트")
+	@Test
+	void save_like_like_type_null_fail() throws Exception {
+		//given
+		LikeCreateRequest givenRequest = LikeCreateRequest.builder()
+			.targetId(1L)
+			.build();
+
+		//when
+		ResultActions resultActions = mockMvc.perform(post("/api/v1/like")
+				.contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer " + accessToken2)
+				.content(objectMapper.writeValueAsString(givenRequest)))
+			.andExpect(status().isBadRequest());
+
+		//then
+		resultActions
+			.andExpect(jsonPath("$.code").value(GlobalErrorCode.NOT_VALID.getCode()))
+			.andExpect(jsonPath("$.message").value(GlobalErrorCode.NOT_VALID.getMessage()));
+	}
 }

@@ -86,7 +86,7 @@ public class LikeService {
 			case POST -> result = false; //TODO 추후 변경 예정
 		}
 
-		if (!result) {
+		if (result) {
 			throw new GlobalException(GlobalErrorCode.ALREADY_LIKE);
 		}
 	}

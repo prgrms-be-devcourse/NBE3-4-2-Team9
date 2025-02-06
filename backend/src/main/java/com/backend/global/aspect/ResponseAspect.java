@@ -40,9 +40,8 @@ public class ResponseAspect {
     public Object handleResponse(ProceedingJoinPoint joinPoint) throws Throwable {
         Object proceed = joinPoint.proceed();
 
-        if (proceed instanceof GenericResponse<?>) {
-            GenericResponse<?> rsData = (GenericResponse<?>) proceed;
-            response.setStatus(rsData.getCode());
+        if (proceed instanceof GenericResponse<?> rsData) {
+	        response.setStatus(rsData.getCode());
         }
 
         return proceed;

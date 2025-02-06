@@ -1,6 +1,6 @@
 package com.backend.global.baseentity;
 
-import com.backend.domain.jobskill.entity.JobSkill;
+import com.backend.domain.jobposting.repository.JobPostingRepository;
 import com.backend.domain.jobskill.repository.JobSkillJpaRepository;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.domain.user.entity.UserRole;
@@ -21,67 +21,94 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BaseInitData {
 
-    private final UserRepository userRepository;
-    private final JobSkillJpaRepository jobSkillRepository;
-    private final PasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
+	private final JobSkillJpaRepository jobSkillRepository;
+	private final JobPostingRepository jobPostingRepository;
+	private final PasswordEncoder passwordEncoder;
 
-    @EventListener(ApplicationReadyEvent.class)
-    @Transactional
-    void init() throws InterruptedException {
-        List<SiteUser> users = createAdminAndUser();
-        List<JobSkill> jobSkills = createJobSkill();
-    }
+	@EventListener(ApplicationReadyEvent.class)
+	@Transactional
+	void init() throws InterruptedException {
+		createAdminAndUser();
+//        createJobPosting();
+	}
 
-    private List<SiteUser> createAdminAndUser() throws InterruptedException {
-        if (userRepository.count() > 0) return null;
-
-        List<SiteUser> users = new ArrayList<>();
-
-        SiteUser admin = SiteUser.builder()
-                .email("admin@admin.com")
-                .name("admin")
-                .password(passwordEncoder.encode("admin"))
-                .userRole(UserRole.ROLE_ADMIN.toString())
-                .build();
-        userRepository.save(admin);
-        users.add(admin);
-
-        SiteUser user1 = SiteUser.builder()
-                .email("user1@user.com")
-                .name("user1")
-                .password(passwordEncoder.encode("user"))
-                .userRole(UserRole.ROLE_USER.toString())
-                .build();
-        userRepository.save(user1);
-        users.add(user1);
-
-        SiteUser user2 = SiteUser.builder()
-                .email("user2@user.com")
-                .name("user2")
-                .password(passwordEncoder.encode("user"))
-                .userRole(UserRole.ROLE_USER.toString())
-                .build();
-        userRepository.save(user2);
-        users.add(user2);
-
-        return users;
-    }
-
-    private List<JobSkill> createJobSkill() throws InterruptedException {
-        if (jobSkillRepository.count() > 0) return null;
-
-        List<JobSkill> jobSkills = new ArrayList<>();
-
-        for (int i = 1; i < 6; i++) {
-            JobSkill skill = JobSkill.builder()
-                    .name("직무" + i)
-                    .code(i)
-                    .build();
-            jobSkillRepository.save(skill);
-            jobSkills.add(skill);
+	private void createAdminAndUser() throws InterruptedException {
+        if (userRepository.count() > 0) {
+            return;
         }
 
-        return jobSkills;
-    }
+		List<SiteUser> users = new ArrayList<>();
+
+		SiteUser admin = SiteUser.builder()
+			.email("admin@admin.com")
+			.name("admin")
+			.password(passwordEncoder.encode("admin"))
+			.userRole(UserRole.ROLE_ADMIN.toString())
+			.build();
+		userRepository.save(admin);
+		users.add(admin);
+
+		SiteUser user1 = SiteUser.builder()
+			.email("user1@user.com")
+			.name("user1")
+			.password(passwordEncoder.encode("user"))
+			.userRole(UserRole.ROLE_USER.toString())
+			.build();
+		userRepository.save(user1);
+		users.add(user1);
+
+		SiteUser user2 = SiteUser.builder()
+			.email("user2@user.com")
+			.name("user2")
+			.password(passwordEncoder.encode("user"))
+			.userRole(UserRole.ROLE_USER.toString())
+			.build();
+		userRepository.save(user2);
+		users.add(user2);
+	}
+
+	/*private void createJobPosting() {
+
+		JobSkill jobSkill1 = jobSkillRepository.findById(1L).get();
+		JobSkill jobSkill2 = jobSkillRepository.findById(2L).get();
+		JobSkill jobSkill3 = jobSkillRepository.findById(3L).get();
+
+		for (int i = 1; i < 15; i++) {
+			JobPosting jobPosting = JobPosting.builder()
+				.url("testUrl")
+				.salary(Salary.builder().code(22).name("1억원 이상").build())
+				.jobPostingStatus(JobPostingStatus.ACTIVE)
+				.companyName("testCompany")
+				.subject("testSubject")
+				.requireEducate(RequireEducate.builder()
+					.code(0).name("학력 무관").build())
+				.postDate(ZonedDateTime.now())
+				.closeDate(ZonedDateTime.now().plusDays(1))
+				.openDate(ZonedDateTime.now())
+				.experienceLevel(ExperienceLevel.builder()
+					.code(1).name("신입").build())
+				.companyLink("testCompanyLink")
+				.applyCnt((long) i)
+				.likeList(null)
+				.subject("testSubject" + i)
+				.build();
+
+			JobPostingJobSkill jobPostingJobSkill1 = JobPostingJobSkill.builder()
+				.jobSkill(jobSkill1)
+				.jobPosting(jobPosting)
+				.build();
+
+			JobPostingJobSkill jobPostingJobSkill2 = JobPostingJobSkill.builder()
+				.jobSkill(jobSkill1)
+				.jobPosting(jobPosting)
+				.build();
+
+			jobPosting.getJobPostingJobSkillList().add(jobPostingJobSkill1);
+			jobPosting.getJobPostingJobSkillList().add(jobPostingJobSkill2);
+
+            jobPostingRepository.save(jobPosting);
+		}
+	}*/
 
 }

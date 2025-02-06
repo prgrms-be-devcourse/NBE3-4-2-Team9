@@ -71,7 +71,7 @@ public class JobPosting {
 	private Long applyCnt; //지원자 수
 
 	@Builder.Default
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "jobPosting")
 	private List<JobPostingJobSkill> jobPostingJobSkillList = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "jobPosting")

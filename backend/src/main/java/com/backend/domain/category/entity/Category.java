@@ -1,11 +1,16 @@
 package com.backend.domain.category.entity;
 
+import com.backend.domain.post.entity.Post;
 import com.backend.global.baseentity.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,6 +31,10 @@ public class Category extends BaseEntity {
 
     @Column(nullable = false, length = 25, unique = true)
     private String name;
+
+    // Category 삭제시 Post도 다 삭제
+    @OneToMany(mappedBy = "categoryId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Post> posts = new ArrayList<>();
 
     // category 객체의 값이 동일한지 비교하는 메서드
     // 테스트 중 에러가 발생해서 추가한 메서드

@@ -8,7 +8,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     // 중복 검사
     boolean existsByName(String name);
-    boolean existsByNameAndIdNot(String name, Long id);
 
     Optional<Category> findByName(String categoryName);
 }

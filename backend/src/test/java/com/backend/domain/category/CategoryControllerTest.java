@@ -1,5 +1,6 @@
 package com.backend.domain.category;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -110,6 +111,15 @@ class CategoryControllerTest {
                 .andExpect(status().isCreated())  // 응답 상태 코드가 201인지 확인
                 .andExpect(jsonPath("$.success").value(true))  // 응답의 success가 true인지 확인
                 .andExpect(jsonPath("$.data.name").value("Tech"));  // 생성된 카테고리의 name이 "Tech"인지 확인
+
+
+        // 수정 후 카테고리 목록 조회하여 수정 되어있는지 확인
+        mockMvc.perform(get("/api/v1/category")
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk()) // 응답 상태 코드가 200인지
+                .andExpect(jsonPath("$.data").isArray()) // 데이터가 배열인지 확인
+                .andExpect(jsonPath("$.data.length()").value(3)) // 데이터 개수가 1인지 확인
+                .andDo(print());
     }
 
     @Test
@@ -142,6 +152,14 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.success").value(true))  // 응답의 success가 true인지 확인
                 .andExpect(jsonPath("$.data.name").value("new Tech"))
                 .andDo(print());
+
+        // 수정 후 카테고리 목록 조회하여 수정 되어있는지 확인
+        mockMvc.perform(get("/api/v1/category")
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk()) // 응답 상태 코드가 200인지
+                .andExpect(jsonPath("$.data").isArray()) // 데이터가 배열인지 확인
+                .andExpect(jsonPath("$.data.length()").value(2)) // 데이터 개수가 1인지 확인
+                .andDo(print());
     }
 
     @Test
@@ -157,6 +175,40 @@ class CategoryControllerTest {
                 .andExpect(status().isForbidden())  // 응답 상태 코드가 403인지
                 .andExpect(jsonPath("$.success").value(false))  // 응답의 success가 true인지 확인
                 .andExpect(jsonPath("$.code").value(403))
+                .andDo(print());
+    }
+
+
+    @Test
+    @DisplayName("카테고리 삭제 - 관리자")
+    void deleteCategory_WithAdminRole() throws Exception {
+        // 테스트용 categoryRequest
+        CategoryRequest categoryRequest = createCategoryRequest("Tech");
+
+        mockMvc.perform(delete("/api/v1/category/{id}", 1L)
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isNoContent()) // 응답 상태 코드가 204인지
+                .andDo(print());
+
+        // 삭제 후 카테고리 목록 조회하여 비어있는지 확인
+        mockMvc.perform(get("/api/v1/category")
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk()) // 응답 상태 코드가 200인지
+                .andExpect(jsonPath("$.data").isArray()) // 데이터가 배열인지 확인
+                .andExpect(jsonPath("$.data.length()").value(1)) // 데이터 개수가 1인지 확인
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("카테고리 삭제 - 유저")
+    void deleteCategory_WithUserRole() throws Exception {
+        // 테스트용 categoryRequest
+        CategoryRequest categoryRequest = createCategoryRequest("Tech");
+
+        mockMvc.perform(delete("/api/v1/category/{id}", 1L)
+                        .header("Authorization", "Bearer " + userToken))
+                .andExpect(status().isForbidden()) // 응답 상태 코드가 403인지
+                .andExpect(jsonPath("$.success").value(false))
                 .andDo(print());
     }
 }

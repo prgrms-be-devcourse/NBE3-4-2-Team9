@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,5 +46,12 @@ public class CategoryController {
             @RequestBody @Validated CategoryRequest categoryRequest, @PathVariable("id") Long id) {
         CategoryResponse categoryResponse = categoryService.updateCategory(id, categoryRequest);
         return GenericResponse.of(true, HttpStatus.OK.value(), categoryResponse);
+    }
+
+    // 카테고리 삭제 (관리자만 가능)
+    @DeleteMapping("/{id}")
+    public GenericResponse<Void> deleteCategory(@PathVariable("id") Long id) {
+        categoryService.deleteCategory(id);
+        return GenericResponse.of(true, HttpStatus.NO_CONTENT.value());
     }
 }

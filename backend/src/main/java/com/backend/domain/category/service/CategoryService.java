@@ -50,7 +50,7 @@ public class CategoryService {
         // 중복 검사
         categoryNameCheck(categoryRequest.getName());
 
-        // 관리자일 경우 기존 카테고리 id로 조회, 없으면 NOT_FOUND 예외 처리
+        // 기존 카테고리 id로 조회, 없으면 NOT_FOUND 예외 처리
         Category findCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.CATEGORY_NOT_FOUND));
 
@@ -59,6 +59,17 @@ public class CategoryService {
 
         // 응답 객체로 변환 후 반환
         return mappingCategory(findCategory);
+    }
+
+    @Transactional
+    // 카테고리 삭제
+    public void deleteCategory(Long id) {
+
+        // 기존 카테고리 id로 조회, 없으면 NOT_FOUND 예외 처리
+        Category findCategory = categoryRepository.findById(id)
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.CATEGORY_NOT_FOUND));
+
+        categoryRepository.delete(findCategory);
     }
 
     // 중복 검사 메서드

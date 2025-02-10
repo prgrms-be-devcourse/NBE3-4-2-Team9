@@ -5,26 +5,33 @@ import { JobPostingPageResponse } from '@/types/job-posting/JobPostingPageRespon
 import { getJobPosting } from '@/api/jobPosting';
 import { BriefcaseIcon, BuildingOfficeIcon, CalendarIcon, AcademicCapIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { privateApi } from '@/api/axios';
 
 export default function JobPostingDetail({ params }: { params: { id: string } }) {
   const [posting, setPosting] = useState<JobPostingPageResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchJobPosting = async () => {
       try {
-        const response = await getJobPosting(parseInt(params.id));
-        if (response.success) {
-          setPosting(response.data);
+        const response = await privateApi.get(`/api/v1/job-posting/${params.id}`);
+        if (response.data.success) {
+          setPosting(response.data.data);
         }
       } catch (error) {
         console.error('Failed to fetch job posting:', error);
+        alert('채용공고를 불러오는데 실패했습니다.');
+        router.push('/job-posting');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchJobPosting();
+    if (params.id) {
+      fetchJobPosting();
+    }
   }, [params.id]);
 
   if (isLoading) {

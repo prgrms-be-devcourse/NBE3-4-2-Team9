@@ -2,6 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 import { ArrowLeftIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import privateApi from '@/api/axios';
 // @ts-ignore
@@ -9,6 +11,7 @@ import { Category } from '@/types/category';
 
 export default function WritePost() {
   const router = useRouter();
+  const { user } = useSelector((state: RootState) => state.auth);
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
@@ -18,6 +21,11 @@ export default function WritePost() {
   const MAX_CONTENT_LENGTH = 10000;
 
   useEffect(() => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
     const fetchCategories = async () => {
       try {
         setIsLoading(true);
@@ -37,7 +45,7 @@ export default function WritePost() {
     };
 
     fetchCategories();
-  }, []);
+  }, [user, router]);
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value;
@@ -56,10 +64,14 @@ export default function WritePost() {
     }
 
     try {
+      const isAdmin = user?.email?.includes('admin');
       const postData = {
         subject: subject.trim(),
         content: content.trim(),
-        categoryId: parseInt(category)
+        categoryId: parseInt(category),
+        authorId: user?.id,
+        authorName: isAdmin ? '관리자' : user?.nickname,
+        isAdmin: isAdmin
       };
 
       const response = await privateApi.post('/api/v1/posts', postData);

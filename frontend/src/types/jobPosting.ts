@@ -1,12 +1,48 @@
 export interface JobPosting {
   id: number;
-  title: string;
+  subject: string;
+  openDate: string;
+  closeDate: string;
+  experienceLevel: {
+    code: number;
+    min: number;
+    max: number;
+    name: string;
+  };
+  requireEducate: {
+    code: number;
+    name: string;
+  };
+  jobPostingStatus: 'ACTIVE' | 'END';
+  salary: {
+    code: number;
+    name: string;
+  };
+  applyCnt: number;
+}
+
+export interface JobPostingDetail extends JobPosting {
+  url: string;
+  postDate: string;
   companyName: string;
-  jobType: string;
-  location: string;
-  experienceLevel: string;
-  createdAt: string;
-  // 필요한 다른 필드들도 추가할 수 있습니다
+  companyLink: string;
+  jobSkillList: Array<{
+    name: string;
+    code: number;
+  }>;
+  voterCount: number;
+  isVoter: boolean;
+}
+
+export interface JobPostingSearchCondition {
+  salaryCode?: number;
+  kw?: string;
+  experienceLevel?: number;
+  requireEducateCode?: number;
+  sort?: string;
+  order?: string;
+  pageNum?: number;
+  pageSize?: number;
 }
 
 export interface JobPostingPageResponse {

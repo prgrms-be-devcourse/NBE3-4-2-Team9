@@ -28,8 +28,12 @@ privateApi.interceptors.request.use(
         config.headers['Authorization'] = `Bearer ${adminToken}`;
       }
     } else {
-      // 일반 유저 토큰은 'accessToken' 또는 'token' 키로 저장된 값 사용
-      const token = localStorage.getItem('accessToken') || localStorage.getItem('token');
+      // 관리자로 로그인한 경우 adminToken 사용, 아닌 경우 일반 토큰 사용
+      const isAdmin = localStorage.getItem('isAdmin') === 'true';
+      const token = isAdmin 
+        ? localStorage.getItem('adminToken')
+        : (localStorage.getItem('accessToken') || localStorage.getItem('token'));
+        
       if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
       }

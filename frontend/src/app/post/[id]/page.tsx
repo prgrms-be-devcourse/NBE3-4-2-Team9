@@ -10,6 +10,17 @@ import { Category } from '@/types/post/Category';
 import { getCategories } from '@/api/category';
 import Link from 'next/link';
 import privateApi from '@/api/axios';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+
+interface Comment {
+  id: number;
+  content: string;
+  createdAt: string;
+  modifiedAt: string;
+  authorName: string;
+  authorImg?: string;
+}
 
 export default function PostDetail() {
   const params = useParams();
@@ -23,6 +34,10 @@ export default function PostDetail() {
   const [editedSubject, setEditedSubject] = useState('');
   const [editedContent, setEditedContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState('');
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -50,11 +65,23 @@ export default function PostDetail() {
 
         if (postResponse.data.success) {
           setPost(postResponse.data.data);
+          setEditedSubject(postResponse.data.data.subject);
+          setEditedContent(postResponse.data.data.content);
           const currentUserId = localStorage.getItem('userId');
           setIsAuthor(currentUserId === String(postResponse.data.data.authorId));
         }
         if (categoriesResponse.data.success) {
           setCategories(categoriesResponse.data.data);
+        }
+
+        // 댓글은 게시글 조회가 성공한 후에 가져오기
+        try {
+          const commentsResponse = await privateApi.get(`/api/v1/posts/${params.id}/comments`);
+          if (commentsResponse.data.success) {
+            setComments(commentsResponse.data.data);
+          }
+        } catch (error) {
+          console.error('Failed to fetch comments:', error);
         }
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -63,15 +90,10 @@ export default function PostDetail() {
       }
     };
 
-    fetchData();
-  }, [params.id]);
-
-  useEffect(() => {
-    if (post) {
-      setEditedSubject(post.subject);
-      setEditedContent(post.content);
+    if (params.id) {
+      fetchData();
     }
-  }, [post]);
+  }, [params.id]);
 
   const handleDelete = async () => {
     if (!confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
@@ -133,6 +155,32 @@ export default function PostDetail() {
       alert('게시글 수정에 실패했습니다.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newComment.trim()) {
+      alert('댓글 내용을 입력해주세요.');
+      return;
+    }
+
+    try {
+      setIsSubmittingComment(true);
+      const response = await privateApi.post(`/api/v1/posts/${params.id}/comments`, {
+        content: newComment.trim()
+      });
+
+      if (response.data.success) {
+        setNewComment('');
+        setComments(prev => [...prev, response.data.data]);
+      }
+    } catch (error) {
+      console.error('댓글 작성 실패:', error);
+      alert('댓글 작성에 실패했습니다.');
+    } finally {
+      setIsSubmittingComment(false);
     }
   };
 
@@ -290,34 +338,55 @@ export default function PostDetail() {
           </div>
         </article>
 
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold mb-6">댓글</h3>
+        <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-lg font-bold mb-4">댓글</h3>
           
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <textarea
-              placeholder="댓글을 입력하세요..."
-              className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-              rows={2}
-            />
-            <div className="flex justify-end mt-2">
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                댓글 작성
-              </button>
+          <form onSubmit={handleCommentSubmit} className="mb-6">
+            <div className="flex flex-col gap-2">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="댓글을 입력하세요"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                rows={3}
+              />
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  disabled={isSubmittingComment}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+                >
+                  {isSubmittingComment ? '작성 중...' : '댓글 작성'}
+                </button>
+              </div>
             </div>
-          </div>
+          </form>
 
           <div className="space-y-4">
-            {true && (
-              <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-                <div className="bg-gray-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                  </svg>
+            {comments.map((comment) => (
+              <div key={comment.id} className="p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    {comment.authorImg ? (
+                      <img 
+                        src={comment.authorImg} 
+                        alt={comment.authorName}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-xs text-gray-500">익명</span>
+                      </div>
+                    )}
+                    <span className="font-medium text-gray-700">{comment.authorName}</span>
+                    <span className="text-sm text-gray-500">
+                      {formatDate(comment.createdAt)}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-gray-500">아직 작성된 댓글이 없습니다</p>
-                <p className="text-sm text-gray-400 mt-1">첫 댓글을 작성해보세요!</p>
+                <p className="text-gray-800 whitespace-pre-wrap">{comment.content}</p>
               </div>
-            )}
+            ))}
           </div>
         </div>
       </div>

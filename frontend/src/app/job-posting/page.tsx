@@ -31,7 +31,7 @@ export default function JobPostingList() {
         url += `&keyword=${encodeURIComponent(searchTerm)}`;
       }
 
-      const response = await privateApi.get<GenericResponse<JobPostingPage>>(url);
+      const response = await privateApi.get(url);
       
       if (response.data.success) {
         const newPostings = response.data.data.content;

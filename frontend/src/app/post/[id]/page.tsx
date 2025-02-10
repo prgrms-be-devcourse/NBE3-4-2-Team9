@@ -204,7 +204,7 @@ export default function PostDetail() {
     return (
       <div className="max-w-4xl mx-auto p-8">
         <div className="text-center py-12 text-gray-500">
-          게시글을 찾을 수 없습니다.
+          로그인 후 이용해주세요.
         </div>
       </div>
     );

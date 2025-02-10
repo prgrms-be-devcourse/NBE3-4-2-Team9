@@ -7,7 +7,7 @@ import { getPosts } from '@/api/post';
 import { getJobPostings } from '@/api/jobPosting';
 import Link from 'next/link';
 import { formatDate } from '@/utils/dateUtils';
-import { BriefcaseIcon, ChatBubbleLeftIcon, ArrowRightIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { ChatBubbleLeftIcon, ArrowRightIcon, BriefcaseIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import JobPostingCard from '@/components/job/JobPostingCard';
 import { Category } from '@/types/post/Category';
 import { getCategories } from '@/api/category';
@@ -103,31 +103,59 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* 채용 공고 섹션 */}
         <section className="py-12">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">최신 채용공고</h2>
-              <Link href="/job-posting" className="text-blue-600 hover:text-blue-700">
-                더보기
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <BriefcaseIcon className="h-6 w-6 text-blue-600" />
+                최신 채용공고
+              </h2>
+              <Link 
+                href="/job-posting"
+                className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+              >
+                더 보기
+                <ArrowRightIcon className="h-4 w-4" />
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {jobPostings.map((posting) => (
-                <div key={posting.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                  <Link href={`/job-posting/${posting.id}`}>
-                    <div className="p-6">
-                      <h3 className="text-lg font-semibold mb-2">{posting.subject}</h3>
-                      <div className="space-y-2 text-sm text-gray-600">
-                        <p>경력: {posting.experienceLevel.name}</p>
-                        <p>학력: {posting.requireEducate.name}</p>
-                        <p>연봉: {posting.salary.name}</p>
+              {isLoading ? (
+                [...Array(3)].map((_, index) => (
+                  <div
+                    key={`job-skeleton-${index}`}
+                    className="bg-white p-6 rounded-lg shadow-lg animate-pulse"
+                  >
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                  </div>
+                ))
+              ) : (
+                jobPostings.map((posting) => (
+                  <Link 
+                    key={posting.id}
+                    href={`/job-posting/${posting.id}`}
+                    className="block bg-white rounded-lg shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all duration-200 transform hover:-translate-y-1"
+                  >
+                    <div className="p-6 flex flex-col h-full justify-between">
+                      <div>
+                        <h2 className="text-lg font-semibold mb-2 line-clamp-2">{posting.subject}</h2>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          <span className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded-full">
+                            {posting.experienceLevel.name}
+                          </span>
+                          <span className="px-3 py-1 text-sm font-medium text-green-600 bg-green-50 rounded-full">
+                            {posting.salary.name}
+                          </span>
+                        </div>
+                        <div className="space-y-2 text-sm text-gray-600">
+                          <p>학력: {posting.requireEducate.name}</p>
+                        </div>
                       </div>
-                      <div className="mt-4 flex justify-between items-center">
-                        <span className="text-sm text-gray-500">
-                          마감일: {formatDate(posting.closeDate)}
-                        </span>
-                        <span className={`px-2 py-1 text-sm rounded ${
-                          posting.jobPostingStatus === 'ACTIVE'
-                            ? 'bg-green-100 text-green-800'
+                      <div className="flex items-center justify-between text-sm text-gray-500 mt-4">
+                        <span>마감일: {formatDate(posting.closeDate)}</span>
+                        <span className={`px-2 py-1 rounded ${
+                          posting.jobPostingStatus === 'ACTIVE' 
+                            ? 'bg-green-100 text-green-800' 
                             : 'bg-red-100 text-red-800'
                         }`}>
                           {posting.jobPostingStatus === 'ACTIVE' ? '진행중' : '마감'}
@@ -135,8 +163,8 @@ export default function Home() {
                       </div>
                     </div>
                   </Link>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </section>
@@ -157,11 +185,11 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {isLoading ? (
               [...Array(3)].map((_, index) => (
                 <div
-                  key={`main-skeleton-${index}`}
+                  key={`post-skeleton-${index}`}
                   className="bg-white p-6 rounded-lg shadow-lg animate-pulse"
                 >
                   <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>

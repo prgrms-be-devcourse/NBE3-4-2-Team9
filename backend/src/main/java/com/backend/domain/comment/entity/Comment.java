@@ -41,5 +41,10 @@ public class Comment extends BaseEntity {
     private SiteUser siteUser;
 
 
+    public void ChangeContent(String content) {
+        this.content = content;
+    }
+
+
 
 }

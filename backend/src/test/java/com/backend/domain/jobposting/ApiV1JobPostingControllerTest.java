@@ -331,7 +331,25 @@ public class ApiV1JobPostingControllerTest {
 		resultActions
 			.andExpect(status().isNotFound())
 			.andExpect(jsonPath("$.code").value(GlobalErrorCode.JOB_POSTING_NOT_FOUND.getCode()))
-			.andExpect(jsonPath("$.message").value(GlobalErrorCode.JOB_POSTING_NOT_FOUND.getMessage()));
+			.andExpect(
+				jsonPath("$.message").value(GlobalErrorCode.JOB_POSTING_NOT_FOUND.getMessage()));
+	}
+
+	@DisplayName("추천한 채용 공고 조회 성공 테스트")
+	@Test
+	void findAllVoter_success() throws Exception {
+		//when
+		ResultActions resultActions = mockMvc.perform(get("/api/v1/job-posting/voter")
+			.contentType(MediaType.APPLICATION_JSON)
+			.header("Authorization", "Bearer " + accessToken1));
+
+		//then
+		resultActions.andExpect(status().isOk())
+			.andExpect(jsonPath("$.success").value(true))
+			.andExpect(jsonPath("$.code").value(200))
+			.andExpect(jsonPath("$.data.content.length()").value(3))
+			.andExpect(jsonPath("$.data.content").exists())
+			.andExpect(jsonPath("$.data.totalPages").value(1));
 	}
 
 }

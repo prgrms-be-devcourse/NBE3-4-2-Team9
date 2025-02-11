@@ -105,6 +105,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
+            // Public URL이면 통과
+            if (isPublicUrl(req)) {
+                filterChain.doFilter(req, resp);
+                return ;
+            }
+
             AuthResponseUtil.failLogin(
                     resp,
                     GenericResponse.of(false, GlobalErrorCode.UNAUTHENTICATION_USER.getCode()),

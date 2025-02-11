@@ -51,6 +51,8 @@ public interface JobPostingRepository {
 	List<Long> findIdsAll();
 
 	/**
+	 * @param jobPostingSearchCondition 검색 조건 객체
+	 * @param pageable pageable
 	 * @return {@link Page<JobPostingPageResponse>}
 	 * @implSpec JobPosting 페이징 동적 조회 메서드 입니다.
 	 */
@@ -58,10 +60,19 @@ public interface JobPostingRepository {
 		Pageable pageable);
 
 	/**
-	 * @return {@link JobPosting}
-	 * @implSpec JobPosting 페이징 동적 조회 메서드 입니다.
+	 * @param jobPostingId 채용 공고 ID
+	 * @return boolean - 데이터가 있으면 true, 없으면 false를 반환합니다.
+	 * @implSpec JobPosting 중복 체크 메서드 입니다.
 	 */
 	boolean existsById(Long jobPostingId);
 
-
+	/**
+	 * @param jobPostingSearchCondition 검색 조건 객체
+	 * @param siteUserId 추천한 사용자 ID
+	 * @param pageable pageable
+	 * @return {@link Page<JobPostingPageResponse>}
+	 * @implSpec 사용자가 추천한 게시글을 조회하는 메서드 입니다.
+	 */
+	Page<JobPostingPageResponse> findAllVoter(JobPostingSearchCondition jobPostingSearchCondition,
+		Long siteUserId, Pageable pageable);
 }

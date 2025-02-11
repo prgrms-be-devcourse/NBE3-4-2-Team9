@@ -2,22 +2,33 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 import { ArrowLeftIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import privateApi from '@/api/axios';
 // @ts-ignore
 import { Category } from '@/types/category';
+import { createPost } from '@/api/post';
+import { getCategories } from '@/api/category';
 
 export default function WritePost() {
   const router = useRouter();
+  const { user } = useSelector((state: RootState) => state.auth);
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
-  const [category, setCategory] = useState('');
+  const [categoryId, setCategoryId] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [charCount, setCharCount] = useState(0);
   const MAX_CONTENT_LENGTH = 10000;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
     const fetchCategories = async () => {
       try {
         setIsLoading(true);
@@ -26,7 +37,7 @@ export default function WritePost() {
           const categoryData = response.data.data;
           setCategories(categoryData);
           if (categoryData.length > 0) {
-            setCategory(categoryData[0].id.toString());
+            setCategoryId(categoryData[0].id.toString());
           }
         }
       } catch (error) {
@@ -37,7 +48,7 @@ export default function WritePost() {
     };
 
     fetchCategories();
-  }, []);
+  }, [user, router]);
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value;
@@ -50,16 +61,26 @@ export default function WritePost() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!subject.trim() || !content.trim() || !category) {
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      router.push('/login');
+      return;
+    }
+
+    if (!subject.trim() || !content.trim() || !categoryId) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
 
     try {
+      setIsSubmitting(true);
+      
+      // PostRequestDto에 맞게 데이터 구성
       const postData = {
         subject: subject.trim(),
         content: content.trim(),
-        categoryId: parseInt(category)
+        categoryId: parseInt(categoryId),
+        jobPostingId: null  // 일반 게시글의 경우 null
       };
 
       const response = await privateApi.post('/api/v1/posts', postData);
@@ -73,6 +94,8 @@ export default function WritePost() {
     } catch (error: any) {
       console.error('게시글 작성 실패:', error);
       alert(error.response?.data?.message || '게시글 작성에 실패했습니다.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -136,8 +159,8 @@ export default function WritePost() {
                       <div className="w-full h-10 bg-gray-100 rounded-lg animate-pulse" />
                     ) : (
                       <select
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
+                        value={categoryId}
+                        onChange={(e) => setCategoryId(e.target.value)}
                         className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900"
                         required
                       >
@@ -210,9 +233,9 @@ export default function WritePost() {
                   <button
                     type="submit"
                     className="px-5 py-2.5 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:opacity-50"
-                    disabled={isLoading || !category || !subject.trim() || !content.trim()}
+                    disabled={isLoading || !categoryId || !subject.trim() || !content.trim() || isSubmitting}
                   >
-                    {isLoading ? '로딩중...' : '작성하기'}
+                    {isLoading ? '로딩중...' : isSubmitting ? '작성중...' : '작성하기'}
                   </button>
                 </div>
               </div>

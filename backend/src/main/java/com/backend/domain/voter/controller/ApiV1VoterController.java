@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * LikeController
- * <p>관심 컨트롤러 입니다.</p>
+ * ApiV1VoterController
+ * <p>추천 컨트롤러 입니다.</p>
  *
  * @author Kim Dong O
  */

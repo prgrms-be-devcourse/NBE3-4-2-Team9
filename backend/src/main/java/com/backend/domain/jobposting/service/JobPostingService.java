@@ -6,6 +6,7 @@ import com.backend.domain.jobposting.repository.JobPostingRepository;
 import com.backend.domain.jobposting.util.JobPostingSearchCondition;
 import com.backend.global.exception.GlobalErrorCode;
 import com.backend.global.exception.GlobalException;
+import com.backend.domain.user.entity.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -57,5 +58,15 @@ public class JobPostingService {
 
 		return jobPostingRepository.findDetailById(jobPostingId, siteUserId)
 			.orElseThrow(() -> new GlobalException(GlobalErrorCode.JOB_POSTING_NOT_FOUND));
+	}
+
+	public Page<JobPostingPageResponse> findAllVoter(
+		JobPostingSearchCondition jobPostingSearchCondition, SiteUser siteUser) {
+
+		Pageable pageable = PageRequest.of(
+			jobPostingSearchCondition.pageNum(), jobPostingSearchCondition.pageSize()
+		);
+
+		return jobPostingRepository.findAllVoter(jobPostingSearchCondition, siteUser.getId(), pageable);
 	}
 }

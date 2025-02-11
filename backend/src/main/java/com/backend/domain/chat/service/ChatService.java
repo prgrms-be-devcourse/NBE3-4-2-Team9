@@ -39,8 +39,8 @@ public class ChatService {
      * 채팅 조회
      */
 
-    public ChatsInPost getByPostId(Long boradId, Pageable pageable) {
-        Page<ChatResponse> result = chatRepository.findByPostId(boradId, pageable);
+    public ChatsInPost getByPostId(Long postId, Pageable pageable) {
+        Page<ChatResponse> result = chatRepository.findByPostId(postId, pageable);
         return new ChatsInPost(result);
     }
 

@@ -7,10 +7,10 @@ import lombok.Builder;
 
 /**
  * VoterCreateRequest
- * <p>관심 등록시 사용할 요청 객체 입니다.</p>
+ * <p>추천 등록시 사용할 요청 객체 입니다.</p>
  *
  * @param targetId 타겟 ID
- * @param voterType 관심 타입 {@link VoterType}
+ * @param voterType 추천 타입 {@link VoterType}
  * @author Kim Dong O
  */
 @Builder

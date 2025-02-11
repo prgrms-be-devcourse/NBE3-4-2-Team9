@@ -9,7 +9,7 @@ public enum VoterType {
 	@JsonCreator
 	public static VoterType from(String param) {
 		return Stream.of(VoterType.values())
-			.filter(likeType -> likeType.toString().equalsIgnoreCase(param))
+			.filter(voterType -> voterType.toString().equalsIgnoreCase(param))
 			.findFirst()
 			.orElse(null);
 	}

@@ -1,6 +1,7 @@
 package com.backend.domain.jobposting.repository;
 
 import static com.backend.domain.jobposting.entity.QJobPosting.jobPosting;
+import static com.backend.domain.voter.entity.QVoter.voter;
 import static com.backend.domain.jobposting.entity.QJobPostingJobSkill.jobPostingJobSkill;
 import static com.backend.domain.voter.entity.QVoter.voter;
 
@@ -110,6 +111,38 @@ public class JobPostingQueryRepository {
 		return Optional.ofNullable(jobPostingDetailResponse);
 	}
 
+	public Page<JobPostingPageResponse> findAllVoter(JobPostingSearchCondition jobPostingSearchCondition,
+		Long siteUserId, Pageable pageable) {
+
+		//조회 로직
+		List<JobPostingPageResponse> content = queryFactory.select(
+				new QJobPostingPageResponse(jobPosting.id, jobPosting.subject,
+					jobPosting.openDate, jobPosting.closeDate, jobPosting.experienceLevel,
+					jobPosting.requireEducate, jobPosting.jobPostingStatus, jobPosting.salary,
+					jobPosting.applyCnt))
+			.from(jobPosting)
+			.leftJoin(jobPosting.voterList, voter)
+			.where(getSubjectContains(jobPostingSearchCondition.kw()),
+				getExperienceLevelEq(jobPostingSearchCondition.experienceLevel()),
+				getRequireEducateCode(jobPostingSearchCondition.requireEducateCode()),
+				getSalaryCodeBetween(jobPostingSearchCondition.salaryCode()),
+				getVoterSiteUserEq(siteUserId))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+
+		//카운트 쿼리
+		JPAQuery<Long> countQuery = queryFactory.select(jobPosting.count())
+			.from(jobPosting)
+			.where(getSubjectContains(jobPostingSearchCondition.kw()),
+				getExperienceLevelEq(jobPostingSearchCondition.experienceLevel()),
+				getRequireEducateCode(jobPostingSearchCondition.requireEducateCode()),
+				getSalaryCodeBetween(jobPostingSearchCondition.salaryCode()),
+				getVoterSiteUserEq(siteUserId));
+
+		return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+	}
+
 	/**
 	 * 정렬할 필드와 정렬 방식을 OrderSpecifier로 반환합니다.
 	 *
@@ -186,5 +219,15 @@ public class JobPostingQueryRepository {
 	 */
 	private BooleanExpression getSubjectContains(String kw) {
 		return StringUtils.hasText(kw) ? jobPosting.subject.contains(kw) : null;
+	}
+
+	/**
+	 * 추천한 사용자의 조건식을 반환합니다.
+	 *
+	 * @param siteUserId
+	 * @return {@link BooleanExpression}
+	 */
+	private BooleanExpression getVoterSiteUserEq(Long siteUserId) {
+		return voter.siteUser.id.eq(siteUserId);
 	}
 }

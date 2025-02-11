@@ -54,16 +54,22 @@ class ChatControllerV1Test {
     @DisplayName("채팅 목록 페이징 조회 성공")
     void testGetChattingListWithPaging() throws Exception {
         mockMvc.perform(get("/api/v1/chat/page/{postId}", postId)
-                        .param("size", "2")  // 페이지 크기 2
+                        .param("size", "10")  // 페이지 크기 2
                         .param("page", "0")  // 첫 번째 페이지 요청
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.chats.content").isArray())  // 경로 변경
-                .andExpect(jsonPath("$.data.chats.content.length()").value(2)) // 페이징 크기 적용
+                .andExpect(jsonPath("$.data.content").isArray())  // `content` 필드 확인
+                .andExpect(jsonPath("$.data.content.length()").value(4)) // 페이징 크기 적용
+                .andExpect(jsonPath("$.data.pageNumber").value(0))  // 현재 페이지 번호 확인
+                .andExpect(jsonPath("$.data.pageSize").value(10))  // 페이지 크기 확인
+                .andExpect(jsonPath("$.data.totalElements").isNumber())  // 총 요소 개수 확인
+                .andExpect(jsonPath("$.data.totalPages").isNumber())  // 총 페이지 개수 확인
+                .andExpect(jsonPath("$.data.last").isBoolean())  // 마지막 페이지 여부 확인
                 .andDo(print());
     }
+
 
 
     @Test

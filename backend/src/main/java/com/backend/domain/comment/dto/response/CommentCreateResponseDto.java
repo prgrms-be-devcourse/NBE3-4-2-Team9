@@ -18,7 +18,7 @@ public class CommentCreateResponseDto {
      *     "id": 1,
      *     "content": "작성한 댓글 내용",
      *     "createdAt": "2025-02-07T14:27:28.271879+09:00",
-     *     "modifiedAt": "2025-02-07T14:27:28.271879+09:00",
+     *     "modifiedAt": "2025-02-07T14:27:28.271879+09:00"
      * }
      */
 

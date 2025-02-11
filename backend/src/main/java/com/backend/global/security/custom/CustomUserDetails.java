@@ -27,8 +27,8 @@ public class CustomUserDetails implements UserDetails {
         return siteUser;
     }
 
-    public String getRole() {
-        return siteUser.getUserRole();
+    public Long getId() {
+        return siteUser.getId();
     }
 
     @Override

@@ -7,7 +7,7 @@ values (CURRENT_DATE, CURRENT_DATE, 'testEmail1@naver.com', 'test', 'test', 'tes
         'testPassword', 'testImg', 'ROLE_USER'),
        (CURRENT_DATE, CURRENT_DATE, 'testEmail3@naver.com', 'test', 'test', 'testId3', 'testName3',
         'testPassword', 'testImg', 'ROLE_USER'),
-    (CURRENT_DATE, CURRENT_DATE, 'admin@naver.com', 'test', 'test', 'testId4', 'testName4',
+       (CURRENT_DATE, CURRENT_DATE, 'admin@naver.com', 'test', 'test', 'testId4', 'testName4',
         'testPassword', 'testImg', 'ROLE_ADMIN');
 
 -- Category 데이터 생성
@@ -51,17 +51,17 @@ values (1, CURRENT_DATE + 1, 'testLink', 'testCompany', 2, 3, 1, '경력 1~3년'
 INSERT INTO post (created_at, modified_at, content, num_of_applicants, recruitment_closing_date,
                   recruitment_status, subject, category_id, job_id, user_id)
 VALUES (CURRENT_DATE, CURRENT_DATE, 'testContent1', null, CURRENT_DATE + 1, null, 'testSubject', 1,
-        null,1),
-    (CURRENT_DATE, CURRENT_DATE, '테스트 내용2', null, CURRENT_DATE + 1, null, '테스트 제목2', 1,
-        null,1),
-    (CURRENT_DATE, CURRENT_DATE, '테스트 내용3', null, CURRENT_DATE + 1, null, '테스트 제목3', 1,
-        null,2),
-    (CURRENT_DATE, CURRENT_DATE, '테스트 내용4', null, CURRENT_DATE + 1, null, '테스트 제목4', 2,
-        null,2),
-    (CURRENT_DATE, CURRENT_DATE, '테스트 내용5', null, CURRENT_DATE + 1, null, '테스트 제목5', 2,
-        null,3),
-    (CURRENT_DATE, CURRENT_DATE, '테스트 내용6', null, CURRENT_DATE + 1, null, '테스트 제목6', 2,
-        null,3);
+        null, 1),
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용2', null, CURRENT_DATE + 1, null, '테스트 제목2', 1,
+        null, 1),
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용3', null, CURRENT_DATE + 1, null, '테스트 제목3', 1,
+        null, 2),
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용4', null, CURRENT_DATE + 1, null, '테스트 제목4', 2,
+        null, 2),
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용5', null, CURRENT_DATE + 1, null, '테스트 제목5', 2,
+        null, 3),
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용6', null, CURRENT_DATE + 1, null, '테스트 제목6', 2,
+        null, 3);
 
 -- JobSkill 데이터 생성
 INSERT INTO job_skill (job_skill_code, job_skill_name)
@@ -69,8 +69,11 @@ VALUES (1, 'JAVA'),
        (2, 'C'),
        (3, 'PYTHON');
 
+
 INSERT INTO job_posting_job_skill(job_posting_id, job_skill_id)
-VALUES (1, 1), (1, 2);
+VALUES (1, 1),
+       (1, 2);
+
 
 -- Chat 데이터 생성
 INSERT INTO chat (created_at, modified_at, post_id, user_id, content, type)

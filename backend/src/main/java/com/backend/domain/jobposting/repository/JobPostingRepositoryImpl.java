@@ -58,5 +58,9 @@ public class JobPostingRepositoryImpl implements JobPostingRepository {
 		return jobPostingJpaRepository.findIdsAll();
 	}
 
-
+	@Override
+	public Page<JobPostingPageResponse> findAllVoter(
+		JobPostingSearchCondition jobPostingSearchCondition, Long siteUserId, Pageable pageable) {
+		return jobPostingQueryRepository.findAllVoter(jobPostingSearchCondition, siteUserId, pageable);
+	}
 }

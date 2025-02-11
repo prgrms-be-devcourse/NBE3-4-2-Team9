@@ -1,14 +1,10 @@
 package com.backend.domain.post;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import com.backend.domain.category.entity.Category;
-import com.backend.domain.category.repository.CategoryRepository;
-import com.backend.domain.post.entity.Post;
-import com.backend.domain.post.repository.PostRepository;
-import com.backend.domain.user.entity.SiteUser;
-import com.backend.domain.user.repository.UserRepository;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +17,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.backend.domain.category.entity.Category;
+import com.backend.domain.category.repository.CategoryRepository;
+import com.backend.domain.post.entity.Post;
+import com.backend.domain.post.repository.PostRepository;
+import com.backend.domain.user.entity.SiteUser;
+import com.backend.domain.user.repository.UserRepository;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -40,6 +43,10 @@ class PostRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    // @Autowired
+    // private RecruitmentUserRepository recruitmentUserRepository;
+    //
     private SiteUser testUser;
     private Post testPost;
 
@@ -64,6 +71,8 @@ class PostRepositoryTest {
         // 테스트 데이터 가져오기
         testPost = postRepository.findBySubject("testSubject")
                 .orElseThrow(() -> new RuntimeException("테스트 게시글을 찾을 수 없습니다."));
+
+        // recruitmentUserRepository.deleteAll();
     }
 
     @Test

@@ -56,3 +56,20 @@ jwt:
 api:
   key: YpYSmykXUtWhZkDrVkHdPOnT0VusIHP5LNwOb1WN87NfKD0y8BC
   count: 3
+
+#메일 설정
+mail:
+  chat-url: http://localhost:3000/chat/
+  host: smtp.gmail.com
+  port: 587
+  username: dongokim99@gmail.com
+  password: fhct bwcz ysxs pamv
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+  templates:
+    path: mail-templates/
+    recruitment-chat: recruitment-chat-template

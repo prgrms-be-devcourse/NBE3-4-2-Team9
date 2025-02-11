@@ -202,7 +202,7 @@ public class ApiV1CommentControllerTest {
     void delete_comment_not_author_fail() throws Exception {
 
         Long postId = givenPost.getPostId();
-        Comment findComment = commentRepository.findById(3L).get();
+        Comment findComment = commentRepository.findById(2L).get();
 
         ResultActions resultActions = mockMvc.perform(
                 delete("/api/v1/posts/{postId}/comments/{id}", postId,findComment.getId())

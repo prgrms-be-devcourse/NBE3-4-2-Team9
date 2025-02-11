@@ -63,6 +63,12 @@ VALUES (CURRENT_DATE, CURRENT_DATE, 'testContent1', null, CURRENT_DATE + 1, null
        (CURRENT_DATE, CURRENT_DATE, '테스트 내용6', null, CURRENT_DATE + 1, null, '테스트 제목6', 2,
         null, 3);
 
+-- Comment 데이터 생성
+INSERT INTO comment (content, post_id, user_id, created_at, modified_at)
+VALUES ('testComment1', 1, 1, CURRENT_DATE, CURRENT_DATE),
+       ('testComment2', 1, 2, CURRENT_DATE, CURRENT_DATE),
+       ('testComment3', 1, 3, CURRENT_DATE, CURRENT_DATE);
+
 -- JobSkill 데이터 생성
 INSERT INTO job_skill (job_skill_code, job_skill_name)
 VALUES (1, 'JAVA'),

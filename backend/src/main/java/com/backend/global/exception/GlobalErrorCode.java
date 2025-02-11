@@ -47,6 +47,7 @@ public enum GlobalErrorCode {
 
     // 댓글 도메인 에러 코드
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, 4001, "댓글이 존재하지않습니다."),
+    COMMENT_NOT_AUTHOR(HttpStatus.FORBIDDEN, 4002, "댓글 작성자가 아닙니다."),
 
 	// 관심 에러 코드 7001 ~
 	ALREADY_VOTER(HttpStatus.BAD_REQUEST, 7001, "이미 관심을 추가하였습니다."),

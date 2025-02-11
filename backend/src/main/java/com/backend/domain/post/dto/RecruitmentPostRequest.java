@@ -12,7 +12,7 @@ public class RecruitmentPostRequest extends FreePostRequest {
 	@NotNull
 	private Long jobPostingId;
 
-	@Min(value = 1, message = "모집 인원은 최소 1명 이상이오야 합니다.")
+	@Min(value = 1, message = "모집 인원은 최소 1명 이상이어야 합니다.")
     private Integer numOfApplicants;
 
 }

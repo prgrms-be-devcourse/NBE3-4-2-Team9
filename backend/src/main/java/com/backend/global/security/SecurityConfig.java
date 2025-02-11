@@ -122,7 +122,10 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.PATCH, "/api/v1/category/**").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.POST, "/api/v1/like").hasRole("USER")
 					.requestMatchers(HttpMethod.POST, "/api/v1/recruitment/**").hasRole("USER")
-					.requestMatchers(HttpMethod.DELETE, "/api/v1/recruitment/**").hasRole("USER")
+					.requestMatchers(HttpMethod.DELETE,
+							"/api/v1/recruitment/**",
+							"api/v1/posts/{postId}/comments/{id}")
+						.hasAnyRole("USER", "ADMIN")
 					.requestMatchers(HttpMethod.PATCH, "/api/v1/recruitment/**").hasRole("USER")
 					.requestMatchers(HttpMethod.DELETE, "/api/v1/category/**").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.POST, "/api/v1/voter").hasRole("USER")

@@ -2,6 +2,8 @@ package com.backend.domain.comment.repository;
 
 import com.backend.domain.comment.entity.Comment;
 import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,5 +13,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("SELECT c FROM Comment c JOIN FETCH c.siteUser WHERE c.id = :commentId")
     Optional<Comment> findByIdWithUser(@Param("commentId") Long commentId);
+
+    Page<Comment> findByPost_PostId(@Param("postId") Long postId, Pageable pageable);
 
 }

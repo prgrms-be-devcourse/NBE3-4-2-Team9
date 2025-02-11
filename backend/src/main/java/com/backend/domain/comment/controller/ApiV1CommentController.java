@@ -8,6 +8,7 @@ import com.backend.global.response.GenericResponse;
 import com.backend.global.security.custom.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,24 @@ import org.springframework.web.bind.annotation.*;
 public class ApiV1CommentController {
 
     private final CommentService commentService;
+
+    @GetMapping
+    public GenericResponse<Page<CommentCreateResponseDto>> getComments(
+            @PathVariable Long postId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<CommentCreateResponseDto> commentPage = commentService.getComments(postId, page, size);
+
+        return GenericResponse.of(
+                true,
+                HttpStatus.OK.value(),
+                commentPage,
+                "댓글을 조회합니다."
+        );
+
+
+    }
 
     @PostMapping
     public GenericResponse<CommentCreateResponseDto> createComment(

@@ -13,6 +13,10 @@ import com.backend.global.exception.GlobalErrorCode;
 import com.backend.global.exception.GlobalException;
 import com.backend.global.security.custom.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,4 +81,14 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
+
+    public Page<CommentCreateResponseDto> getComments(Long postId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Page<Comment> commentPage = commentRepository.findByPost_PostId(postId, pageable);
+
+        return commentPage.map(CommentCreateResponseDto::convertEntity);
+
+
+    }
 }

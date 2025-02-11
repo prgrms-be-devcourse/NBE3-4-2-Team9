@@ -80,7 +80,7 @@ public class ApiV1RecruitmentUserController {
      * @param pageSize    페이지 크기 (기본값: 10)
      * @return 모집 승인된 게시글 목록 (Page<PostResponseDto>)
      */
-    @GetMapping("/posts")
+    @GetMapping("/accepted-posts")
     public GenericResponse<RecruitmentPostResponse> getAcceptedPosts(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam(defaultValue = "ACCEPTED") RecruitmentUserStatus status,

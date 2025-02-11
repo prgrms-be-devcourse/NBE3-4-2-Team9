@@ -1,3 +1,4 @@
+/*
 package com.backend.domain.post.repository;
 
 import com.backend.domain.post.entity.Post;
@@ -12,7 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository2 extends JpaRepository<Post, Long> {
 
     // 카테고리와 제목, 내용에서 검색어 포함 여부를 처리하는 쿼리
     @Query("SELECT p FROM Post p WHERE " +
@@ -43,3 +44,4 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByRecruitmentStatus(RecruitmentStatus recruitmentStatus);
 }
 
+*/

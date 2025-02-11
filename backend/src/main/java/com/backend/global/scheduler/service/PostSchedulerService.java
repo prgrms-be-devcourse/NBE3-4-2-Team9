@@ -1,8 +1,9 @@
+/*
 package com.backend.global.scheduler.service;
 
 
 import com.backend.domain.post.entity.Post;
-import com.backend.domain.post.repository.PostRepository;
+import com.backend.domain.post.repository.PostRepository2;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostSchedulerService {
 
-    private final PostRepository postRepository;
+    private final PostRepository2 postRepository2;
 
     @Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul")
     @Transactional
@@ -26,7 +27,7 @@ public class PostSchedulerService {
         log.info("스터디 모집 상태 업데이트 시작");
 
         // 모집 마감해야 할 게시글 조회
-        List<Post> expiredPosts = postRepository.findExpiredRecruitmentPosts(ZonedDateTime.now());
+        List<Post> expiredPosts = postRepository2.findExpiredRecruitmentPosts(ZonedDateTime.now());
 
         // 모집 마감 처리
         expiredPosts.forEach(Post::updateRecruitmentStatus);
@@ -35,3 +36,4 @@ public class PostSchedulerService {
 
     }
 }
+*/

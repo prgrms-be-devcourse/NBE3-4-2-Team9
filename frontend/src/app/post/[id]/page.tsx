@@ -12,6 +12,7 @@ import Link from 'next/link';
 import privateApi from '@/api/axios';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import { RecruitmentButton } from '@/components/recruitment/RecruitmentButton';
 
 interface Comment {
   id: number;
@@ -303,6 +304,25 @@ export default function PostDetail() {
                 </>
               )}
             </div>
+
+            {/* 모집 버튼 추가 */}
+            {post.isRecruitment && (
+              <div className="mt-6 pt-6 border-t">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold">모집 상태</h3>
+                    <p className="text-gray-600 mt-1">
+                      {post.recruitmentStatus === 'OPEN' ? '모집중' : '모집 마감'}
+                    </p>
+                  </div>
+                  <RecruitmentButton 
+                    postId={post.id}
+                    isAuthor={isAuthor}
+                    recruitmentStatus={post.recruitmentStatus}
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="flex items-center justify-between pt-6 border-t">
               <div className="flex items-center gap-4">

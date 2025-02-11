@@ -1,11 +1,14 @@
 package com.backend.domain.post.entity;
 
+import java.time.ZonedDateTime;
+
 import com.backend.domain.category.entity.Category;
 import com.backend.domain.jobposting.entity.JobPosting;
 import com.backend.domain.post.dto.PostRequestDto;
 import com.backend.domain.post.dto.PostResponse;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.global.baseentity.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,7 +19,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.ZonedDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,11 +51,11 @@ public class Post extends BaseEntity {
     // 카테고리 ID -> 카테고리 테이블과의 관계 설정
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category categoryId;
+    private Category category;
 
     // 모집 게시판에만 필요한 부분
     private ZonedDateTime recruitmentClosingDate; // 모집 기간
-    private Long numOfApplicants; // 모집 인원
+    private Integer numOfApplicants; // 모집 인원
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = true) // 모집 게시판 아니면 Null 가능
@@ -62,7 +64,7 @@ public class Post extends BaseEntity {
     // 채용 ID -> JopPosting table에 채용ID랑 이어짐
     @ManyToOne
     @JoinColumn(name = "job_id", nullable = true)
-    private JobPosting jobId;
+    private JobPosting jobPosting;
 
     // UserId 한 개의 게시글은 오직 한 유저에게만 속함
     @ManyToOne
@@ -89,29 +91,22 @@ public class Post extends BaseEntity {
         return Post.builder()
                 .subject(dto.getSubject())
                 .content(dto.getContent())
-                .categoryId(category)
+                .category(category)
                 .author(author)
-                .jobId(jobPosting)
+                .jobPosting(jobPosting)
                 .recruitmentClosingDate(isRecruitment ? dto.getRecruitmentClosingDate() : null)
                 .numOfApplicants(isRecruitment ? (dto.getNumOfApplicants() !=  null ?
-                        dto.getNumOfApplicants().longValue() : null) : null)
+                        dto.getNumOfApplicants() : null) : null)
                 .recruitmentStatus(
                         isRecruitment ? RecruitmentStatus.OPEN : null) // 모집 게시판이면 OPEN
                 .build();
     }
 
     // 게시글 수정(모집 게시판)
-    public void updatePost(String subject, String content,
-            ZonedDateTime recruitmentClosingDate, Integer numOfApplicants) {
-        // 기존 제목과 다를 때
+    public void updatePost(String subject, String content, Integer numOfApplicants) {
         this.subject = subject;
-        // 기존 게시글 내용과 다를 때
         this.content = content;
-
-        if (recruitmentClosingDate != null) {
-            this.recruitmentClosingDate = recruitmentClosingDate;
-        }
-        this.numOfApplicants = Long.valueOf(numOfApplicants);
+        this.numOfApplicants = numOfApplicants;
     }
 
     // 게시글 수정
@@ -128,14 +123,12 @@ public class Post extends BaseEntity {
                 .id(this.postId)
                 .subject(this.subject)
                 .content(this.content)
-                .categoryId(this.categoryId.getId())
-                .jobPostingId(this.jobId != null ? this.jobId.getId() : null)
+                .categoryId(this.category.getId())
+                .jobPostingId(this.jobPosting != null ? this.jobPosting.getId() : null)
                 .isAuthor(this.author.getId().equals(currentUserId))
                 .authorName(this.author.getName())
                 .authorImg(this.author.getProfileImg())
                 .createdAt(this.getCreatedAt())
-                // 모집 게시판 필드 추가
-                .recruitmentClosingDate(this.recruitmentClosingDate)
                 .numOfApplicants(this.numOfApplicants != null ?
                         this.numOfApplicants.intValue() : null)
                 .recruitmentStatus(this.recruitmentStatus != null ?

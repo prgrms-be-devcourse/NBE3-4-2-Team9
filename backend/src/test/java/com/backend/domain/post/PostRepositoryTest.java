@@ -3,7 +3,9 @@ package com.backend.domain.post;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.backend.domain.post.entity.RecruitmentStatus;
 import com.backend.domain.recruitmentUser.repository.RecruitmentUserRepository;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -199,12 +201,30 @@ class PostRepositoryTest {
         assertThat(updatedPost.get().getContent()).isEqualTo(updatedContent);
     }
 
+
+     @Test
+     @DisplayName("모집 상태별 조회")
+     void testGetPostsByRecruitmentStatus(){
+
+        // RecruitmentStatus.OPEN 상태인 게시글만 조회되는지 검증
+         List<Post> openPosts = postRepository.findByRecruitmentStatus(RecruitmentStatus.OPEN);
+
+         // RecruitmentStatus.CLOSED 상태인 게시글만 조회되는지 검증
+         List<Post> closedPosts = postRepository.findByRecruitmentStatus(RecruitmentStatus.CLOSED);
+
+         // open 상태 게시글 갯수 검증
+         assertThat(openPosts).isNotEmpty();
+         assertThat(openPosts).allMatch(post -> post.getRecruitmentStatus() == RecruitmentStatus.OPEN);
+
+         // close 상태 게시글 갯수 검증
+         assertThat(closedPosts).isNotEmpty();
+         assertThat(closedPosts).allMatch(post -> post.getRecruitmentStatus() == RecruitmentStatus.CLOSED);
+
+     }
+
     // findExpiredRecruitmentPosts()
+    // init.sql에 모집 마감일이 현재보다 이전인 게시글
+    // 쿼리를 실행시 올바른 게시글 조회
 
-    // findAllByCategoryId()
-
-    // findByKeyword()
-
-    // findByRecruitmentStatus()
 }
 

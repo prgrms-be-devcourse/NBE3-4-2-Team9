@@ -1,6 +1,7 @@
 package com.backend.domain.post.repository;
 
 import com.backend.domain.post.entity.Post;
+import com.backend.domain.post.entity.RecruitmentStatus;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -38,5 +39,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p from Post p where p.recruitmentClosingDate "
             + "<= :now and p.recruitmentStatus = :status")
     List<Post> findExpiredRecruitmentPosts(@Param("now") ZonedDateTime now);
+
+    List<Post> findByRecruitmentStatus(RecruitmentStatus recruitmentStatus);
 }
 

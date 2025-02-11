@@ -1,13 +1,8 @@
 package com.backend.domain.recruitmentUser.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.backend.domain.post.entity.Post;
 import com.backend.domain.post.entity.RecruitmentStatus;
-import com.backend.domain.post.repository.PostRepository;
+import com.backend.domain.post.repository.PostRepository2;
 import com.backend.domain.recruitmentUser.dto.response.RecruitmentPostResponse;
 import com.backend.domain.recruitmentUser.entity.RecruitmentUser;
 import com.backend.domain.recruitmentUser.entity.RecruitmentUserStatus;
@@ -15,8 +10,11 @@ import com.backend.domain.recruitmentUser.repository.RecruitmentUserRepository;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.global.exception.GlobalErrorCode;
 import com.backend.global.exception.GlobalException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * RecruitmentUserService 유저 모집 신청 및 모집 관련 조회를 담당하는 서비스 클래스입니다.
@@ -28,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class RecruitmentUserService {
 
     private final RecruitmentUserRepository recruitmentUserRepository;
-    private final PostRepository postRepository;
+    private final PostRepository2 postRepository2;
 
     // ==============================
     //  1. 비즈니스 로직
@@ -175,7 +173,7 @@ public class RecruitmentUserService {
      * @throws GlobalException 게시글이 존재하지 않을 경우 예외 발생
      */
     private Post getPost(Long postId) {
-        return postRepository.findById(postId)
+        return postRepository2.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
     }
 }

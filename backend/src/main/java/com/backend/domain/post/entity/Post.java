@@ -1,10 +1,9 @@
 package com.backend.domain.post.entity;
 
 import com.backend.domain.category.entity.Category;
-
 import com.backend.domain.jobposting.entity.JobPosting;
 import com.backend.domain.post.dto.PostRequestDto;
-import com.backend.domain.post.dto.PostResponseDto;
+import com.backend.domain.post.dto.PostResponse;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.global.baseentity.BaseEntity;
 import jakarta.persistence.Column;
@@ -124,14 +123,14 @@ public class Post extends BaseEntity {
     }
 
     // Entity -> DTO 변환
-    public PostResponseDto toDto(Long currentUserId) {
-        return PostResponseDto.builder()
+    public PostResponse toDto(Long currentUserId) {
+        return PostResponse.builder()
                 .id(this.postId)
                 .subject(this.subject)
                 .content(this.content)
                 .categoryId(this.categoryId.getId())
                 .jobPostingId(this.jobId != null ? this.jobId.getId() : null)
-                .isAuthor(currentUserId != null && this.author.getId().equals(currentUserId))
+                .isAuthor(this.author.getId().equals(currentUserId))
                 .authorName(this.author.getName())
                 .authorImg(this.author.getProfileImg())
                 .createdAt(this.getCreatedAt())

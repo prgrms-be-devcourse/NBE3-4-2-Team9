@@ -1,16 +1,13 @@
 package com.backend.domain.recruitmentUser.dto.response;
 
-import static com.backend.domain.post.entity.QPost.post;
-
-import org.springframework.data.domain.Page;
-
-import com.backend.domain.post.dto.PostResponseDto;
+import com.backend.domain.post.dto.PostResponse;
 import com.backend.domain.post.entity.Post;
 import com.backend.domain.recruitmentUser.entity.RecruitmentUserStatus;
+import org.springframework.data.domain.Page;
 
 public record RecruitmentPostResponse(
 	RecruitmentUserStatus status,
-	Page<PostResponseDto> postResponseDtoList
+	Page<PostResponse> postResponseDtoList
 ) {
 	public static RecruitmentPostResponse from(RecruitmentUserStatus status,
 		Page<Post> posts) {

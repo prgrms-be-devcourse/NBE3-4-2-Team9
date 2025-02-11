@@ -10,7 +10,7 @@ import lombok.Getter;
 @Builder
 @Getter
 @AllArgsConstructor
-public class PostResponseDto {
+public class PostResponse {
 
 	private Long id;
 	private String subject;
@@ -23,9 +23,6 @@ public class PostResponseDto {
 	private ZonedDateTime createdAt;
 
 	// 모집 게시판 전용 필드
-	@JsonInclude(value = Include.NON_NULL)
-	private ZonedDateTime recruitmentClosingDate;
-
 	@JsonInclude(value = Include.NON_NULL)
 	private Integer numOfApplicants;
 

@@ -48,19 +48,19 @@ values (1, CURRENT_DATE + 1, 'testLink', 'testCompany', 2, 3, 1, '경력 1~3년'
         CURRENT_DATE, 0, '학력 무관', 99, '면접 후 결정', '테스트 제목12', 'testUrl', 12);
 
 -- Post 데이터 생성
-INSERT INTO post (created_at, modified_at, content, num_of_applicants, recruitment_closing_date,
+INSERT INTO post (created_at, modified_at, content, num_of_applicants,
                   recruitment_status, subject, category_id, job_id, user_id)
-VALUES (CURRENT_DATE, CURRENT_DATE, 'testContent1', null, CURRENT_DATE + 1, null, 'testSubject', 1,
+VALUES (CURRENT_DATE, CURRENT_DATE, 'testContent1', null, null, 'testSubject', 1,
         null, 1),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용2', null, CURRENT_DATE + 1, null, '테스트 제목2', 1,
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용2', null, null, '테스트 제목2', 1,
         null, 1),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용3', null, CURRENT_DATE + 1, null, '테스트 제목3', 1,
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용3', null, null, '테스트 제목3', 1,
         null, 2),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용4', null, CURRENT_DATE + 1, 'OPEN', '테스트 제목4', 2,
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용4', null, 'OPEN', '테스트 제목4', 2,
         null, 2),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용5', null, CURRENT_DATE + 1, 'CLOSED', '테스트 제목5', 2,
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용5', null, 'CLOSED', '테스트 제목5', 2,
         null, 3),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용6', null, CURRENT_DATE + 1, null, '테스트 제목6', 2,
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용6', null, null, '테스트 제목6', 2,
         null, 3);
 
 -- JobSkill 데이터 생성

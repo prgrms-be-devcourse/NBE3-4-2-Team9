@@ -34,7 +34,7 @@ public class Category extends BaseEntity {
 
     // Category 삭제시 Post도 다 삭제
     @Builder.Default
-    @OneToMany(mappedBy = "categoryId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
     // category 객체의 값이 동일한지 비교하는 메서드

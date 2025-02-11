@@ -13,6 +13,7 @@ public record RecruitmentPostResponse(
 		Page<Post> posts) {
 		return new RecruitmentPostResponse(
 			status,
-			posts.map(post -> post.toDto(null)));
+			posts.map(post -> null));
+		//TODO 추후 페이징 응답 객체 생성 후 수정 예정
 	}
 }

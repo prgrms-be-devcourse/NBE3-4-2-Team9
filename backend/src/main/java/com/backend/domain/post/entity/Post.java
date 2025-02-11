@@ -1,14 +1,9 @@
 package com.backend.domain.post.entity;
 
-import java.time.ZonedDateTime;
-
 import com.backend.domain.category.entity.Category;
 import com.backend.domain.jobposting.entity.JobPosting;
-import com.backend.domain.post.dto.PostRequestDto;
-import com.backend.domain.post.dto.PostResponse;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.global.baseentity.BaseEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.ZonedDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -74,38 +70,9 @@ public class Post extends BaseEntity {
 	// createDate: 생성일자, BaseEntity 상속
 	// modifyDate: 수정일자, BaseEntity 상속
 
-	// 모집 상태 업데이트
-	public void updateRecruitmentStatus() {
-		if (recruitmentClosingDate != null &&
-			recruitmentClosingDate.isBefore(ZonedDateTime.now())) {
-			this.recruitmentStatus = RecruitmentStatus.CLOSED;
-		}
-	}
-
-	// 객체 생성 메서드
-	public static Post createPost(PostRequestDto dto, Category category,
-		SiteUser author, JobPosting jobPosting) {
-
-		boolean isRecruitment = "모집 게시판".equals(category.getName());
-
-		return Post.builder()
-			.subject(dto.getSubject())
-			.content(dto.getContent())
-			.category(category)
-			.author(author)
-			.jobPosting(jobPosting)
-			.recruitmentClosingDate(isRecruitment ? dto.getRecruitmentClosingDate() : null)
-			.numOfApplicants(isRecruitment ? (dto.getNumOfApplicants() != null ?
-				dto.getNumOfApplicants() : null) : null)
-			.recruitmentStatus(
-				isRecruitment ? RecruitmentStatus.OPEN : null) // 모집 게시판이면 OPEN
-			.build();
-	}
-
 	// 게시글 수정(모집 게시판)
 	public void updatePost(String subject, String content, Integer numOfApplicants) {
-		this.subject = subject;
-		this.content = content;
+		updatePost(subject, content);
 		this.numOfApplicants = numOfApplicants;
 	}
 
@@ -117,7 +84,7 @@ public class Post extends BaseEntity {
 		this.content = content;
 	}
 
-	// Entity -> DTO 변환
+	/*// Entity -> DTO 변환
 	public PostResponse toDto(Long currentUserId) {
 		return PostResponse.builder()
 			.id(this.postId)
@@ -134,5 +101,5 @@ public class Post extends BaseEntity {
 			.recruitmentStatus(this.recruitmentStatus != null ?
 				this.recruitmentStatus.name() : null)
 			.build();
-	}
+	}*/
 }

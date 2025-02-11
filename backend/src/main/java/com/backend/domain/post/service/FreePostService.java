@@ -27,7 +27,7 @@ public class FreePostService {
 			.orElseThrow(() -> new GlobalException(GlobalErrorCode.CATEGORY_NOT_FOUND));
 
 		Post savePost = PostConverter
-			.createPost(freePostRequest, siteUser, findCategory));
+			.createPost(freePostRequest, siteUser, findCategory);
 
 		Post savedPost = postRepository.save(savePost);
 

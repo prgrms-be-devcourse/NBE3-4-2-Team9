@@ -18,6 +18,19 @@ interface UserProfile {
     name: string;
     code: number;
   }>;
+  posts?: Array<{
+    postId: number;
+    subject: string;
+    createdAt: string;
+    categoryName: string;
+  }>;
+  comments?: Array<{
+    commentId: number;
+    postId: number;
+    postSubject: string;
+    content: string;
+    createdAt: string;
+  }>;
 }
 
 export default function UserProfile({ params }: { params: { id: string } }) {
@@ -141,23 +154,80 @@ export default function UserProfile({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {/* 내가 작성한 게시글 섹션만 추가 */}
+        {/* 내가 작성한 게시글 섹션 */}
         <div className="bg-white rounded-xl shadow-lg p-6 mt-8">
-          <h3 className="text-xl font-bold mb-6">내가 작성한 게시글</h3>
+          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+            <ChatBubbleLeftIcon className="h-6 w-6 text-blue-600" />
+            내가 작성한 게시글
+          </h3>
           
-          {/* 게시글이 없을 때 */}
-          <div className="text-center py-12">
-            <div className="bg-gray-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <ChatBubbleLeftIcon className="h-8 w-8 text-gray-400" />
+          {profile.posts && profile.posts.length > 0 ? (
+            <div className="space-y-4">
+              {profile.posts.map((post) => (
+                <div key={post.postId} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <Link href={`/posts/${post.postId}`} className="block">
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-lg font-medium text-gray-900">{post.subject}</h4>
+                      <span className="text-sm text-gray-500">
+                        {new Date(post.createdAt).toLocaleDateString('ko-KR')}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      카테고리: {post.categoryName}
+                    </p>
+                  </Link>
+                </div>
+              ))}
             </div>
-            <p className="text-gray-500 mb-4">아직 작성한 게시글이 없습니다</p>
-            <Link
-              href="/post/write"
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              첫 게시글 작성하기
-            </Link>
-          </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="bg-gray-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <ChatBubbleLeftIcon className="h-8 w-8 text-gray-400" />
+              </div>
+              <p className="text-gray-500 mb-4">아직 작성한 게시글이 없습니다</p>
+              <Link
+                href="/post/write"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                첫 게시글 작성하기
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* 내가 작성한 댓글 섹션 */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mt-8">
+          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+            <ChatBubbleLeftIcon className="h-6 w-6 text-blue-600" />
+            내가 작성한 댓글
+          </h3>
+          
+          {profile.comments && profile.comments.length > 0 ? (
+            <div className="space-y-4">
+              {profile.comments.map((comment) => (
+                <div key={comment.commentId} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <Link href={`/posts/${comment.postId}`} className="block">
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-sm font-medium text-gray-600">
+                        게시글: {comment.postSubject}
+                      </h4>
+                      <span className="text-sm text-gray-500">
+                        {new Date(comment.createdAt).toLocaleDateString('ko-KR')}
+                      </span>
+                    </div>
+                    <p className="text-gray-900 mt-2">{comment.content}</p>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="bg-gray-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <ChatBubbleLeftIcon className="h-8 w-8 text-gray-400" />
+              </div>
+              <p className="text-gray-500">아직 작성한 댓글이 없습니다</p>
+            </div>
+          )}
         </div>
 
         {/* 모집자 명단 섹션 */}

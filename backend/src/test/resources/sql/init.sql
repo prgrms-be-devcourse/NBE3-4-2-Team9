@@ -56,9 +56,9 @@ VALUES (CURRENT_DATE, CURRENT_DATE, 'testContent1', null, CURRENT_DATE + 1, null
         null, 1),
        (CURRENT_DATE, CURRENT_DATE, '테스트 내용3', null, CURRENT_DATE + 1, null, '테스트 제목3', 1,
         null, 2),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용4', null, CURRENT_DATE + 1, null, '테스트 제목4', 2,
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용4', null, CURRENT_DATE + 1, 'OPEN', '테스트 제목4', 2,
         null, 2),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용5', null, CURRENT_DATE + 1, null, '테스트 제목5', 2,
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용5', null, CURRENT_DATE + 1, 'CLOSED', '테스트 제목5', 2,
         null, 3),
        (CURRENT_DATE, CURRENT_DATE, '테스트 내용6', null, CURRENT_DATE + 1, null, '테스트 제목6', 2,
         null, 3);

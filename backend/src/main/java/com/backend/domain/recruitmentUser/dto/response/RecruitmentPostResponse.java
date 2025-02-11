@@ -1,5 +1,7 @@
 package com.backend.domain.recruitmentUser.dto.response;
 
+import static com.backend.domain.post.entity.QPost.post;
+
 import org.springframework.data.domain.Page;
 
 import com.backend.domain.post.dto.PostResponseDto;
@@ -14,6 +16,6 @@ public record RecruitmentPostResponse(
 		Page<Post> posts) {
 		return new RecruitmentPostResponse(
 			status,
-			posts.map(PostResponseDto::fromEntity));
+			posts.map(post -> post.toDto(null)));
 	}
 }

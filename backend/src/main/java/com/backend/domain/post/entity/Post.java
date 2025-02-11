@@ -101,9 +101,9 @@ public class Post extends BaseEntity {
                 .build();
     }
 
-    // 게시글 수정
-    public void updatePost(String subject, String content, ZonedDateTime recruitmentClosingDate,
-            Integer numOfApplicants) {
+    // 게시글 수정(모집 게시판)
+    public void updatePost(String subject, String content,
+            ZonedDateTime recruitmentClosingDate, Integer numOfApplicants) {
         // 기존 제목과 다를 때
         this.subject = subject;
         // 기존 게시글 내용과 다를 때
@@ -112,6 +112,15 @@ public class Post extends BaseEntity {
         if (recruitmentClosingDate != null) {
             this.recruitmentClosingDate = recruitmentClosingDate;
         }
+        this.numOfApplicants = Long.valueOf(numOfApplicants);
+    }
+
+    // 게시글 수정
+    public void updatePost(String subject, String content) {
+        // 기존 제목과 다를 때
+        this.subject = subject;
+        // 기존 게시글 내용과 다를 때
+        this.content = content;
     }
 
     // Entity -> DTO 변환

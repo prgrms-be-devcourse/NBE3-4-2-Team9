@@ -3,6 +3,7 @@ package com.backend.domain.post;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.backend.domain.recruitmentUser.repository.RecruitmentUserRepository;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -44,9 +45,9 @@ class PostRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    // @Autowired
-    // private RecruitmentUserRepository recruitmentUserRepository;
-    //
+     @Autowired
+     private RecruitmentUserRepository recruitmentUserRepository;
+
     private SiteUser testUser;
     private Post testPost;
 
@@ -197,5 +198,13 @@ class PostRepositoryTest {
         assertThat(updatedPost.get().getSubject()).isEqualTo(updatedTitle);
         assertThat(updatedPost.get().getContent()).isEqualTo(updatedContent);
     }
+
+    // findExpiredRecruitmentPosts()
+
+    // findAllByCategoryId()
+
+    // findByKeyword()
+
+    // findByRecruitmentStatus()
 }
 

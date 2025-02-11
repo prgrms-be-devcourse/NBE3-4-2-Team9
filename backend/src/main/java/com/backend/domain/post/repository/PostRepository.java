@@ -1,6 +1,8 @@
 package com.backend.domain.post.repository;
 
 import com.backend.domain.post.entity.Post;
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,5 +34,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // 제목으로 조회
     Optional<Post> findBySubject(String subject);
 
+    // 모집 마감해야 할 게시글 조회
+    @Query("SELECT p from Post p where p.recruitmentClosingDate "
+            + "<= :now and p.recruitmentStatus = :status")
+    List<Post> findExpiredRecruitmentPosts(@Param("now") ZonedDateTime now);
 }
 

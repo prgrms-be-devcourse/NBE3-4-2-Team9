@@ -85,6 +85,7 @@ public class RecruitmentAuthorService {
 	 * @return 지원자 목록 (DTO 변환)
 	 * @throws GlobalException 작성자가 아닐 경우 예외 발생
 	 */
+	@Transactional(readOnly = true)
 	public RecruitmentUserPageResponse getAppliedUserList(SiteUser author, Long postId,
 		Pageable pageable) {
 		Post post = validateAuthorAndGetPost(author, postId);
@@ -103,6 +104,7 @@ public class RecruitmentAuthorService {
 	 * @return 모집된 참여자 목록 (DTO 변환)
 	 * @throws GlobalException 작성자가 아닐 경우 예외 발생
 	 */
+	@Transactional(readOnly = true)
 	public RecruitmentUserPageResponse getAcceptedUserList(SiteUser author, Long postId,
 		Pageable pageable) {
 		Post post = validateAuthorAndGetPost(author, postId);

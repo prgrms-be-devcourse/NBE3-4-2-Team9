@@ -1,17 +1,17 @@
 package com.backend.domain.post;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.backend.domain.post.dto.PostRequestDto;
 import com.backend.domain.post.entity.Post;
-import com.backend.domain.post.repository.PostRepository;
+import com.backend.domain.post.repository.PostRepository2;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.domain.user.repository.UserRepository;
 import com.backend.global.security.custom.CustomUserDetails;
@@ -49,7 +49,7 @@ public class PostControllerTest {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private PostRepository postRepository;
+    private PostRepository2 postRepository2;
 
     @Value("${jwt.token.access-expiration}")
     private long ACCESS_EXPIRATION;
@@ -88,7 +88,7 @@ public class PostControllerTest {
         String accessToken = jwtUtil.createAccessToken(customUserDetails, ACCESS_EXPIRATION);
 
         // 게시글 ID 가져오기(ex. 가장 최근 게시글 조회)
-        Post testPost = postRepository.findBySubject("테스트 제목2")
+        Post testPost = postRepository2.findBySubject("테스트 제목2")
                 .orElseThrow(() -> new RuntimeException(
                         "게시글을 찾을 수 없습니다."));// 또는 ID가 작은 순으로 정렬해서 가져올 수도 있음
 
@@ -106,7 +106,7 @@ public class PostControllerTest {
     @DisplayName("로그인 하지 않은 사용자가 게시글 상세 조회")
     void getPostById_Unauthorized() throws Exception {
 
-        Post testPost = postRepository.findBySubject("테스트 제목2")
+        Post testPost = postRepository2.findBySubject("테스트 제목2")
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
         Long postId = testPost.getPostId(); // 실제 DB에 존재하는 ID 사용
@@ -145,7 +145,7 @@ public class PostControllerTest {
         String accessToken = jwtUtil.createAccessToken(customUserDetails, ACCESS_EXPIRATION);
 
         // 게시글 ID 가져오기(ex. 가장 최근 게시글 조회)
-        Post post = postRepository.findAll().get(0); // 또는 ID가 작은 순으로 정렬해서 가져올 수도 있음
+        Post post = postRepository2.findAll().get(0); // 또는 ID가 작은 순으로 정렬해서 가져올 수도 있음
         Long postId = post.getPostId(); // 실제 DB에 존재하는 ID 사용
 
         mockMvc.perform(get("/api/v1/posts/{id}", postId).contentType(MediaType.APPLICATION_JSON)
@@ -180,7 +180,7 @@ public class PostControllerTest {
         String accessToken = jwtUtil.createAccessToken(customUserDetails, ACCESS_EXPIRATION);
 
         // 테스트 할 게시글 조회
-        Post testPost = postRepository.findBySubject("테스트 제목3")
+        Post testPost = postRepository2.findBySubject("테스트 제목3")
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
         // 수정할 데이터 생성
@@ -211,7 +211,7 @@ public class PostControllerTest {
         String accessToken = jwtUtil.createAccessToken(otherUserDetails, ACCESS_EXPIRATION);
 
         // 테스트 할 게시글 조회
-        Post testPost = postRepository.findBySubject("테스트 제목6")
+        Post testPost = postRepository2.findBySubject("테스트 제목6")
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
         // 수정할 데이터 생성
@@ -239,7 +239,7 @@ public class PostControllerTest {
         CustomUserDetails customUserDetails = new CustomUserDetails(writer);
         String accessToken = jwtUtil.createAccessToken(customUserDetails, ACCESS_EXPIRATION);
 
-        Post testPost = postRepository.findBySubject("테스트 제목4")
+        Post testPost = postRepository2.findBySubject("테스트 제목4")
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
         mockMvc.perform(delete("/api/v1/posts/{id}", testPost.getPostId())
@@ -248,7 +248,7 @@ public class PostControllerTest {
                 .andDo(print());
 
         // 삭제 후 존재 여부 확인
-        boolean exists = postRepository.existsById(testPost.getPostId());
+        boolean exists = postRepository2.existsById(testPost.getPostId());
         assertThat(exists).isFalse();
     }
 
@@ -256,7 +256,7 @@ public class PostControllerTest {
     @Order(5)
     @DisplayName("게시글 삭제 - 작성자가 아닌 유저가 삭제 -> 실패")
     void deletePost_Forbidden() throws Exception {
-        Post testPost = postRepository.findBySubject("테스트 제목5")
+        Post testPost = postRepository2.findBySubject("테스트 제목5")
                 .orElseThrow(() -> new RuntimeException("테스트 게시글을 찾을 수 없습니다."));
 
         SiteUser otherUser = userRepository.findByEmail("testEmail1@naver.com")

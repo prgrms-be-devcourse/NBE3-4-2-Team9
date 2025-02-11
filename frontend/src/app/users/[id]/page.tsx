@@ -162,35 +162,33 @@ export default function UserProfile({ params }: { params: { id: string } }) {
           </h3>
           
           {profile.posts && profile.posts.length > 0 ? (
-            <div className="space-y-4">
-              {profile.posts.map((post) => (
-                <div key={post.postId} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <Link href={`/posts/${post.postId}`} className="block">
-                    <div className="flex justify-between items-center">
-                      <h4 className="text-lg font-medium text-gray-900">{post.subject}</h4>
-                      <span className="text-sm text-gray-500">
-                        {new Date(post.createdAt).toLocaleDateString('ko-KR')}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">
-                      카테고리: {post.categoryName}
-                    </p>
-                  </Link>
-                </div>
+            <div className="divide-y divide-gray-100">
+              {profile.posts.slice(0, 5).map((post) => (
+                <Link 
+                  key={post.postId} 
+                  href={`/posts/${post.postId}`} 
+                  className="flex justify-between items-center py-4 hover:bg-gray-50 px-2 rounded transition-colors"
+                >
+                  <div className="flex-1">
+                    <h4 className="text-gray-900 font-medium">{post.subject}</h4>
+                    <p className="text-sm text-gray-500 mt-1">{post.categoryName}</p>
+                  </div>
+                  <span className="text-sm text-gray-400 ml-4">
+                    {new Date(post.createdAt).toLocaleDateString('ko-KR')}
+                  </span>
+                </Link>
               ))}
+              {profile.posts.length > 5 && (
+                <div className="text-center pt-4">
+                  <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    더보기 ({profile.posts.length - 5}개)
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <div className="bg-gray-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <ChatBubbleLeftIcon className="h-8 w-8 text-gray-400" />
-              </div>
-              <p className="text-gray-500 mb-4">아직 작성한 게시글이 없습니다</p>
-              <Link
-                href="/post/write"
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                첫 게시글 작성하기
-              </Link>
+            <div className="text-center py-8">
+              <p className="text-gray-500">아직 작성한 게시글이 없습니다</p>
             </div>
           )}
         </div>
@@ -203,28 +201,32 @@ export default function UserProfile({ params }: { params: { id: string } }) {
           </h3>
           
           {profile.comments && profile.comments.length > 0 ? (
-            <div className="space-y-4">
-              {profile.comments.map((comment) => (
-                <div key={comment.commentId} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                  <Link href={`/posts/${comment.postId}`} className="block">
-                    <div className="flex justify-between items-center">
-                      <h4 className="text-sm font-medium text-gray-600">
-                        게시글: {comment.postSubject}
-                      </h4>
-                      <span className="text-sm text-gray-500">
-                        {new Date(comment.createdAt).toLocaleDateString('ko-KR')}
-                      </span>
-                    </div>
-                    <p className="text-gray-900 mt-2">{comment.content}</p>
-                  </Link>
-                </div>
+            <div className="divide-y divide-gray-100">
+              {profile.comments.slice(0, 5).map((comment) => (
+                <Link 
+                  key={comment.commentId} 
+                  href={`/posts/${comment.postId}`}
+                  className="block py-4 hover:bg-gray-50 px-2 rounded transition-colors"
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">게시글: {comment.postSubject}</span>
+                    <span className="text-sm text-gray-400">
+                      {new Date(comment.createdAt).toLocaleDateString('ko-KR')}
+                    </span>
+                  </div>
+                  <p className="text-gray-900 mt-2 line-clamp-1">{comment.content}</p>
+                </Link>
               ))}
+              {profile.comments.length > 5 && (
+                <div className="text-center pt-4">
+                  <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    더보기 ({profile.comments.length - 5}개)
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <div className="bg-gray-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <ChatBubbleLeftIcon className="h-8 w-8 text-gray-400" />
-              </div>
+            <div className="text-center py-8">
               <p className="text-gray-500">아직 작성한 댓글이 없습니다</p>
             </div>
           )}

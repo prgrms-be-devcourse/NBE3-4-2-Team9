@@ -17,28 +17,38 @@ export const publicApi = axios.create({
   withCredentials: true
 });
 
+// 관리자 전용 엔드포인트 목록
+const adminEndpoints = [
+  '/api/v1/category',
+  '/api/v1/adm'
+];
+
 // 인증이 필요한 요청에만 토큰 추가
 privateApi.interceptors.request.use(
   (config) => {
-    // 카테고리 관리 엔드포인트는 adminToken 사용
-    if (config.url?.includes('/api/v1/category') &&
-        (config.method === 'post' || config.method === 'delete' || config.method === 'patch')) {
-      const adminToken = localStorage.getItem('adminToken');
-      if (adminToken) {
-        config.headers['Authorization'] = `Bearer ${adminToken}`;
-      }
-    } else {
-      // 관리자로 로그인한 경우 adminToken 사용, 아닌 경우 일반 토큰 사용
-      const isAdmin = localStorage.getItem('isAdmin') === 'true';
-      const token = isAdmin 
-        ? localStorage.getItem('adminToken')
-        : (localStorage.getItem('accessToken') || localStorage.getItem('token'));
-        
-      if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
-      }
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    const adminToken = localStorage.getItem('adminToken');
+    const userToken = localStorage.getItem('accessToken') || localStorage.getItem('token');
+
+    // 관리자 전용 엔드포인트 체크
+    const isAdminEndpoint = adminEndpoints.some(endpoint => 
+      config.url?.includes(endpoint)
+    );
+
+    // 관리자 전용 엔드포인트거나 관리자로 로그인한 경우 adminToken 사용
+    if ((isAdminEndpoint || isAdmin) && adminToken) {
+      config.headers['Authorization'] = `Bearer ${adminToken}`;
+    } 
+    // 그 외의 경우 userToken 사용
+    else if (userToken) {
+      config.headers['Authorization'] = `Bearer ${userToken}`;
     }
-    console.log('Request headers:', config.headers);
+    
+    console.log('Request URL:', config.url);
+    console.log('Is admin endpoint:', isAdminEndpoint);
+    console.log('Is admin:', isAdmin);
+    console.log('Token used:', config.headers['Authorization']);
+    
     return config;
   },
   (error) => {

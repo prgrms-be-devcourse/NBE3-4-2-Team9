@@ -2,6 +2,7 @@ import { ApiResponse } from '@/types/common/ApiResponse';
 import { PageResponse } from '@/types/common/PageResponse';
 import { PostResponse } from '@/types/post/PostResponse';
 import publicApi from './axios';
+import privateApi from './axios';
 
 interface GetPostsParams {
   categoryId?: number;
@@ -27,7 +28,14 @@ interface CreatePostRequest {
   categoryId: number;
 }
 
-export const createPost = async (data: CreatePostRequest): Promise<ApiResponse<PostResponse>> => {
-  const response = await publicApi.post('/api/v1/posts', data);
+export const createPost = async (postData: {
+  subject: string;
+  content: string;
+  categoryId: string;
+  authorId: string;
+  authorName: string;
+  authorImg?: string;
+}) => {
+  const response = await privateApi.post('/api/v1/posts', postData);
   return response.data;
 }; 

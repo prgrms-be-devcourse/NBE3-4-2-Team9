@@ -22,20 +22,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/api/v1/posts")
+@RequestMapping("/api/v1/free/posts")
 @RestController
 @RequiredArgsConstructor
-public class ApiV1PostController {
+public class ApiV1FreePostController {
 
     // PostService 주입
     private final PostService postService;
+    // 모집게시판 id
+    private static final Long recruitmentBoardId = 2L;
 
-    // 게시글 생성
+    // 자유게시판: 게시글 생성
     @PostMapping
     public GenericResponse<PostResponseDto> createPost
     (@Valid @RequestBody PostRequestDto responseDto,
             @AuthenticationPrincipal CustomUserDetails user) {
 
+        if(responseDto.getCategoryId() == recruitmentBoardId) {
+            throw new GlobalException(GlobalErrorCode.INVALID_BOARD_TYPE);
+        }
         PostResponseDto createdPost = postService.createPost(responseDto, user.getSiteUser());
         return GenericResponse.of(true, HttpStatus.CREATED.value(), createdPost);
     }

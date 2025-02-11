@@ -30,6 +30,7 @@ public enum GlobalErrorCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, 1002, "게시글이 존재하지 않습니다."),
     POST_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, 1003, "게시글 삭제 권한이 없습니다."),
     POST_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN, 1004, "게시글 업데이트 권한이 없습니다."),
+    INVALID_BOARD_TYPE(HttpStatus.BAD_REQUEST, 1005, "게시판 타입을 잘못 선택했습니다."),
 
     // 카테고리 도메인 에러 코드
     DUPLICATED_CATEGORY_NAME(HttpStatus.BAD_REQUEST, 3001, "카테고리 이름이 이미 존재합니다."),

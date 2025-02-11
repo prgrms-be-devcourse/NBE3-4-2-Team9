@@ -20,4 +20,9 @@ public class PostResponseDto {
     private String authorImg;
     private ZonedDateTime createdAt;
 
+    // 모집 게시판 전용 필드
+    private ZonedDateTime recruitmentClosingDate;
+    private Integer numOfApplicants;
+    private String recruitmentStatus; // Enum -> String
+
 }

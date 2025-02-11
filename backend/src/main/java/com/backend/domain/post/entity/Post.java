@@ -1,13 +1,12 @@
 package com.backend.domain.post.entity;
 
 import com.backend.domain.category.entity.Category;
-import com.backend.domain.comment.entity.Comment;
+
 import com.backend.domain.jobposting.entity.JobPosting;
 import com.backend.domain.post.dto.PostRequestDto;
 import com.backend.domain.post.dto.PostResponseDto;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.global.baseentity.BaseEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,11 +16,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -77,21 +73,48 @@ public class Post extends BaseEntity {
     // createDate: 생성일자, BaseEntity 상속
     // modifyDate: 수정일자, BaseEntity 상속
 
-    // 객체 생성 통일
-    public static Post createPost(String subject, String content, Category category,
-            SiteUser author, JobPosting jobposting) {
+    // 모집 상태 업데이트
+    public void updateRecruitmentStatus() {
+        if (recruitmentClosingDate != null &&
+                recruitmentClosingDate.isBefore(ZonedDateTime.now())) {
+            this.recruitmentStatus = RecruitmentStatus.CLOSED;
+        }
+    }
+
+    // 객체 생성 메서드
+    public static Post createPost(PostRequestDto dto, Category category,
+            SiteUser author, JobPosting jobPosting) {
+
         boolean isRecruitment = "모집 게시판".equals(category.getName());
 
         return Post.builder()
-                .subject(subject)
-                .content(content)
+                .subject(dto.getSubject())
+                .content(dto.getContent())
                 .categoryId(category)
-                .jobId(jobposting)
                 .author(author)
-                .recruitmentStatus(isRecruitment ? RecruitmentStatus.OPEN : null) // 모집 게시판이면 OPEN
+                .jobId(jobPosting)
+                .recruitmentClosingDate(isRecruitment ? dto.getRecruitmentClosingDate() : null)
+                .numOfApplicants(isRecruitment ? (dto.getNumOfApplicants() !=  null ?
+                        dto.getNumOfApplicants().longValue() : null) : null)
+                .recruitmentStatus(
+                        isRecruitment ? RecruitmentStatus.OPEN : null) // 모집 게시판이면 OPEN
                 .build();
     }
 
+    // 게시글 수정
+    public void updatePost(String subject, String content, ZonedDateTime recruitmentClosingDate,
+            Integer numOfApplicants) {
+        // 기존 제목과 다를 때
+        this.subject = subject;
+        // 기존 게시글 내용과 다를 때
+        this.content = content;
+
+        if (recruitmentClosingDate != null) {
+            this.recruitmentClosingDate = recruitmentClosingDate;
+        }
+    }
+
+    // Entity -> DTO 변환
     public PostResponseDto toDto(Long currentUserId) {
         return PostResponseDto.builder()
                 .id(this.postId)
@@ -103,27 +126,12 @@ public class Post extends BaseEntity {
                 .authorName(this.author.getName())
                 .authorImg(this.author.getProfileImg())
                 .createdAt(this.getCreatedAt())
+                // 모집 게시판 필드 추가
+                .recruitmentClosingDate(this.recruitmentClosingDate)
+                .numOfApplicants(this.numOfApplicants != null ?
+                        this.numOfApplicants.intValue() : null)
+                .recruitmentStatus(this.recruitmentStatus != null ?
+                        this.recruitmentStatus.name() : null)
                 .build();
-    }
-
-    public static Post createPost(PostRequestDto dto, Category category,
-            SiteUser author, JobPosting jobPosting) {
-        return Post.builder()
-                .subject(dto.getSubject())
-                .content(dto.getContent())
-                .categoryId(category)
-                .author(author)
-                .jobId(jobPosting)
-                .recruitmentStatus(
-                        jobPosting != null ? RecruitmentStatus.OPEN : null) // 모집 게시판이면 OPEN
-                .build();
-    }
-
-    // 게시글 수정
-    public void updatePost(String subject, String content) {
-        // 기존 제목과 다를 때
-        this.subject = subject;
-        // 기존 게시글 내용과 다를 때
-        this.content = content;
     }
 }

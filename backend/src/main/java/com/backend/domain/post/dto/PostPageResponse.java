@@ -13,7 +13,8 @@ public record PostPageResponse(
 	String authorProfileImage,
 	Long commentCount,
 	Long voterCount,
-	ZonedDateTime createdAt) {
+	ZonedDateTime createdAt,
+	String postType) {
 
 	@QueryProjection
 	public PostPageResponse {

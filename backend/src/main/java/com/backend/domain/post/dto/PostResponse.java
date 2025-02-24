@@ -21,6 +21,7 @@ public record PostResponse(
 	Long voterCount,
 	boolean isVoter,
 	ZonedDateTime createdAt,
+	String postType,
 
 	// 모집 게시판 전용 필드
 	@JsonInclude(value = Include.NON_NULL)

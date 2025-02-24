@@ -104,23 +104,4 @@ public class Post extends BaseEntity {
 	public void updateRecruitmentStatus(RecruitmentStatus recruitmentStatus) {
 		this.recruitmentStatus = recruitmentStatus;
 	}
-
-	/*// Entity -> DTO 변환
-	public PostResponse toDto(Long currentUserId) {
-		return PostResponse.builder()
-			.id(this.postId)
-			.subject(this.subject)
-			.content(this.content)
-			.categoryId(this.category.getId())
-			.jobPostingId(this.jobPosting != null ? this.jobPosting.getId() : null)
-			.isAuthor(this.author.getId().equals(currentUserId))
-			.authorName(this.author.getName())
-			.authorImg(this.author.getProfileImg())
-			.createdAt(this.getCreatedAt())
-			.numOfApplicants(this.numOfApplicants != null ?
-				this.numOfApplicants.intValue() : null)
-			.recruitmentStatus(this.recruitmentStatus != null ?
-				this.recruitmentStatus.name() : null)
-			.build();
-	}*/
 }

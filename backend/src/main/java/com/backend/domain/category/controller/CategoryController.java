@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,13 +27,12 @@ public class CategoryController {
     // 카테고리 전체 조회
     @GetMapping
     public GenericResponse<List<CategoryResponse>> getAllCategory() {
-        List<CategoryResponse> categorieList = categoryService.categoryList();
-        return GenericResponse.ok( categorieList);
+        List<CategoryResponse> categoryList = categoryService.categoryList();
+        return GenericResponse.ok(categoryList);
     }
 
     // 카테고리 추가 (관리자만 가능)
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)     // 200번이 나와서 임시로 CREATED 설정
     public GenericResponse<CategoryResponse> createCategory(@RequestBody @Validated CategoryRequest categoryRequest) {
         CategoryResponse categoryResponse = categoryService.createCategory(categoryRequest);
         return GenericResponse.ok(HttpStatus.CREATED.value(), categoryResponse);

@@ -1,8 +1,8 @@
 package com.backend.domain.category.service;
 
-import static com.backend.domain.category.converter.CategoryConverter.changeEntity;
-import static com.backend.domain.category.converter.CategoryConverter.mappingCategory;
-import static com.backend.domain.category.converter.CategoryConverter.mappingCategoryList;
+import static com.backend.domain.category.converter.CategoryConverter.toEntity;
+import static com.backend.domain.category.converter.CategoryConverter.toResponse;
+import static com.backend.domain.category.converter.CategoryConverter.toResponseList;
 
 import com.backend.domain.category.dto.request.CategoryRequest;
 import com.backend.domain.category.dto.response.CategoryResponse;
@@ -24,9 +24,10 @@ public class CategoryService {
     // 카테고리 전체 조회
     public List<CategoryResponse> categoryList() {
         List<Category> categoryList = categoryRepository.findAll();
-        return mappingCategoryList(categoryList);
+        return toResponseList(categoryList);
     }
 
+    @Transactional
     // 카테고리 추가 (관리자만 등록 가능)
     public CategoryResponse createCategory(CategoryRequest categoryRequest) {
 
@@ -34,13 +35,13 @@ public class CategoryService {
         categoryNameCheck(categoryRequest.getName());
 
         // DTO -> Entity로 변환
-        Category category = changeEntity(categoryRequest);
+        Category category = toEntity(categoryRequest);
 
         // DB에 저장
         Category saveCategory = categoryRepository.save(category);
 
         // 응답 객체로 변환 후 반환
-        return mappingCategory(saveCategory);
+        return toResponse(saveCategory);
     }
 
     @Transactional
@@ -58,7 +59,7 @@ public class CategoryService {
         findCategory.updateName(categoryRequest.getName());
 
         // 응답 객체로 변환 후 반환
-        return mappingCategory(findCategory);
+        return toResponse(findCategory);
     }
 
     @Transactional

@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepository {
 
-	private final PostJpaRepository postJpaRepository;
+	private final BasePostRepository postJpaRepository;
 	private final PostQueryRepository postQueryRepository;
 
 	@Override

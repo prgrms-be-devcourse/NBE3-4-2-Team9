@@ -7,8 +7,8 @@ import com.backend.domain.post.conveter.PostConverter;
 import com.backend.domain.post.dto.FreePostRequest;
 import com.backend.domain.post.dto.PostCreateResponse;
 import com.backend.domain.post.dto.PostResponse;
-import com.backend.domain.post.entity.Post;
-import com.backend.domain.post.repository.PostRepository;
+import com.backend.domain.post.entity.FreePost;
+import com.backend.domain.post.repository.FreePostRepository;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.global.exception.GlobalErrorCode;
 import com.backend.global.exception.GlobalException;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class FreePostService {
 
-	private final PostRepository postRepository;
+	private final FreePostRepository freePostRepository;
 	private final CategoryRepository categoryRepository;
 
 	/**
@@ -33,11 +33,11 @@ public class FreePostService {
 	 * @return {@link PostResponse}
 	 * @throws GlobalException 게시글이 존재하지 않을 때 예외 발생
 	 */
+
 	@Transactional(readOnly = true)
 	public PostResponse findById(Long postId, SiteUser siteUser) {
-
-		return postRepository.findPostResponseById(postId, siteUser.getId())
-			.orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
+		return freePostRepository.findPostResponseById(postId, siteUser.getId())
+				.orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 	}
 
 	/**
@@ -48,17 +48,17 @@ public class FreePostService {
 	 * @return {@link PostCreateResponse}
 	 * @throws GlobalException 카테고리가 존재하지 않을 때 발생
 	 */
+
 	@Transactional
 	public PostCreateResponse save(FreePostRequest freePostRequest, SiteUser siteUser) {
 		log.info("free={}", freePostRequest);
 
 		Category findCategory = categoryRepository.findByName(CategoryName.FREE.getValue())
-			.orElseThrow(() -> new GlobalException(GlobalErrorCode.CATEGORY_NOT_FOUND));
+				.orElseThrow(() -> new GlobalException(GlobalErrorCode.CATEGORY_NOT_FOUND));
 
-		Post savePost = PostConverter
-			.createPost(freePostRequest, siteUser, findCategory);
+		FreePost savePost = PostConverter.createPost(freePostRequest, siteUser, findCategory);
 
-		Post savedPost = postRepository.save(savePost);
+		FreePost savedPost = freePostRepository.save(savePost);
 
 		return PostConverter.toPostCreateResponse(savedPost.getPostId(), findCategory.getId());
 	}
@@ -72,19 +72,20 @@ public class FreePostService {
 	 * @return {@link PostResponse}
 	 * @throws GlobalException
 	 */
+
 	@Transactional
 	public PostResponse update(Long postId, FreePostRequest freePostRequest, SiteUser siteUser) {
-
-		Post target = postRepository.findByIdFetch(postId)
-			.orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
+		FreePost target = freePostRepository.findById(postId)
+				.orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
 		if (!target.getAuthor().getId().equals(siteUser.getId())) {
 			throw new GlobalException(GlobalErrorCode.POST_NOT_AUTHOR);
 		}
 
-		target.updatePost(freePostRequest.getSubject(), freePostRequest.getContent());
+		target.setSubject(freePostRequest.getSubject());
+		target.setContent(freePostRequest.getContent());
 
-		Post updatedPost = postRepository.save(target);
+		FreePost updatedPost = freePostRepository.save(target);
 
 		return PostConverter.toPostResponse(updatedPost, true);
 	}
@@ -95,17 +96,15 @@ public class FreePostService {
 	 * @param postId   삭제할 게시글 ID
 	 * @param siteUser 로그인한 사용자
 	 */
+
 	@Transactional
 	public void delete(Long postId, SiteUser siteUser) {
-
-		Post findPost = postRepository.findByIdFetch(postId)
-			.orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
+		FreePost findPost = freePostRepository.findById(postId)
+				.orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
 		if (!findPost.getAuthor().getId().equals(siteUser.getId())) {
 			throw new GlobalException(GlobalErrorCode.POST_NOT_AUTHOR);
 		}
-
-		postRepository.deleteById(findPost.getPostId());
+		freePostRepository.deleteById(findPost.getPostId());
 	}
-
 }

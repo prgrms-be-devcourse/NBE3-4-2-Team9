@@ -10,11 +10,13 @@ import com.backend.domain.jobposting.entity.JobPostingStatus;
 import com.backend.domain.jobposting.entity.RequireEducate;
 import com.backend.domain.jobposting.entity.Salary;
 import com.backend.domain.jobposting.repository.JobPostingRepository;
+import com.backend.domain.jobskill.constant.JobSkillConstant;
 import com.backend.domain.jobskill.entity.JobSkill;
 import com.backend.domain.jobskill.repository.JobSkillJpaRepository;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.domain.user.entity.UserRole;
 import com.backend.domain.user.repository.UserRepository;
+import com.backend.global.redis.repository.RedisRepository;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +39,14 @@ public class BaseInitData {
 	private final JobPostingRepository jobPostingRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final CategoryRepository categoryRepository;
+	private final RedisRepository redisRepository;
 
 	@EventListener(ApplicationReadyEvent.class)
 	@Transactional
 	void init() throws InterruptedException {
 		createAdminAndUser();
 //        createJobPosting();
+		createRedisJobSkill();
 		createCategory();
 	}
 
@@ -79,6 +83,17 @@ public class BaseInitData {
 			.build();
 		userRepository.save(user2);
 		users.add(user2);
+	}
+
+	private void createRedisJobSkill() {
+		jobSkillRepository.findAll().forEach(jobSkill -> {
+			String redisKey = JobSkillConstant.JOB_SKILL_REDIS_KEY.getKey() + jobSkill.getCode();
+			boolean hasKey = redisRepository.hasKey(redisKey);
+
+			if (!hasKey) {
+				redisRepository.save(redisKey, jobSkill.getId());
+			}
+		});
 	}
 
 	private void createJobPosting() {

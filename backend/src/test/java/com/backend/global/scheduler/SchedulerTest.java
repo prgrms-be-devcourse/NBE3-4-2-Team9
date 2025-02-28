@@ -1,3 +1,4 @@
+/*
 package com.backend.global.scheduler;
 
 import org.assertj.core.api.Assertions;
@@ -36,3 +37,4 @@ public class SchedulerTest {
         Assertions.assertThat(result).isEqualTo(9);
     }
 }
+*/

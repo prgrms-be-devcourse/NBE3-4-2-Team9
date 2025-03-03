@@ -3,6 +3,7 @@ package com.backend.domain.post.controller;
 import com.backend.domain.post.dto.PostCreateResponse;
 import com.backend.domain.post.dto.PostResponse;
 import com.backend.domain.post.dto.RecruitmentPostRequest;
+import com.backend.domain.post.dto.RecruitmentPostResponse;
 import com.backend.domain.post.service.RecruitmentPostService;
 import com.backend.global.response.GenericResponse;
 import com.backend.global.security.custom.CustomUserDetails;
@@ -27,11 +28,11 @@ public class ApiV1RecruitmentPostController {
 	private final RecruitmentPostService recruitmentPostService;
 
 	@GetMapping("/{postId}")
-	public GenericResponse<PostResponse> findById(
+	public GenericResponse<RecruitmentPostResponse> findById(
 		@PathVariable("postId") Long postId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-		PostResponse postResponse = recruitmentPostService.findById(postId, customUserDetails.getSiteUser());
+		RecruitmentPostResponse postResponse = recruitmentPostService.findById(postId, customUserDetails.getSiteUser());
 
 		return GenericResponse.ok(postResponse);
 	}
@@ -51,12 +52,12 @@ public class ApiV1RecruitmentPostController {
 
 	// 모집 게사글 수정
 	@PatchMapping("/{postId}")
-	public GenericResponse<PostResponse> updatePost(
+	public GenericResponse<RecruitmentPostResponse> updatePost(
 		@PathVariable(name = "postId") Long postId,
 		@RequestBody @Valid RecruitmentPostRequest requestDto,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	) {
-		PostResponse result = recruitmentPostService.update(postId, requestDto, userDetails.getSiteUser());
+		RecruitmentPostResponse result = recruitmentPostService.update(postId, requestDto, userDetails.getSiteUser());
 		return GenericResponse.ok(result);
 	}
 

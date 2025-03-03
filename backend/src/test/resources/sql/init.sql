@@ -7,9 +7,9 @@ values (CURRENT_DATE, CURRENT_DATE, 'testEmail1@naver.com', 'test', 'test', 'tes
         'testPassword', 'testImg', 'ROLE_USER'),
        (CURRENT_DATE, CURRENT_DATE, 'testEmail3@naver.com', 'test', 'test', 'testId3', 'testName3',
         'testPassword', 'testImg', 'ROLE_USER'),
-        (CURRENT_DATE, CURRENT_DATE, 'ho_gok@naver.com', 'test', 'test', 'testId4', '현곤',
+       (CURRENT_DATE, CURRENT_DATE, 'ho_gok@naver.com', 'test', 'test', 'testId4', '현곤',
         'testPassword', 'testImg', 'ROLE_USER'),
-        (CURRENT_DATE, CURRENT_DATE, 'vkdnjdjxor@naver.com', 'test', 'test', 'testId3', '현석',
+       (CURRENT_DATE, CURRENT_DATE, 'vkdnjdjxor@naver.com', 'test', 'test', 'testId3', '현석',
         'testPassword', 'testImg', 'ROLE_USER'),
        (CURRENT_DATE, CURRENT_DATE, 'admin@naver.com', 'test', 'test', 'testId4', 'testName4',
         'testPassword', 'testImg', 'ROLE_ADMIN');
@@ -52,20 +52,21 @@ values (1, CURRENT_DATE + 1, 'testLink', 'testCompany', 2, 3, 1, '경력 1~3년'
         CURRENT_DATE, 0, '학력 무관', 99, '면접 후 결정', '테스트 제목12', 'testUrl', 12);
 
 -- Post 데이터 생성
-INSERT INTO post (created_at, modified_at, content, num_of_applicants, recruitment_closing_date,
-                  recruitment_status, subject, category_id, job_id, user_id)
-VALUES (CURRENT_DATE, CURRENT_DATE, 'testContent1', 3, CURRENT_DATE + 1, null, 'testSubject', 1,
-        null, 1),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용2', 3, CURRENT_DATE + 1, null, '테스트 제목2', 1,
-        null, 1),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용3', 3, CURRENT_DATE + 1, null, '테스트 제목3', 1,
-        null, 2),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용4', 3, CURRENT_DATE + 1, null, '테스트 제목4', 2,
-        null, 2),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용5', 2, CURRENT_DATE + 1, null, '테스트 제목5', 2,
-        null, 3),
-       (CURRENT_DATE, CURRENT_DATE, '테스트 내용6', 1, CURRENT_DATE + 1, null, '테스트 제목6', 2,
-        null, 3);
+INSERT INTO post (created_at, modified_at, content, subject, category_id, user_id, post_type)
+VALUES (CURRENT_DATE, CURRENT_DATE, 'testContent1', 'testSubject', 1, 1, 'recruitment'),
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용2', '테스트 제목2', 1, 1, 'recruitment'),
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용3', '테스트 제목3', 1, 2, 'recruitment'),
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용4', '테스트 제목4', 2, 2, 'recruitment'),
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용5', '테스트 제목5', 2, 3, 'recruitment'),
+       (CURRENT_DATE, CURRENT_DATE, '테스트 내용6', '테스트 제목6', 2, 3, 'recruitment');
+
+INSERT INTO recruitment_post (num_of_applicants, job_id, post_id, recruitment_closing_date, recruitment_status)
+VALUES (3, 1, 1, CURRENT_DATE + 1, 'OPEN'),
+       (3, 1, 2, CURRENT_DATE + 1, 'OPEN'),
+       (3, 1, 3, CURRENT_DATE + 1, 'OPEN'),
+       (3, 1, 4, CURRENT_DATE + 1, 'OPEN'),
+       (2, 1, 5, CURRENT_DATE + 1, 'OPEN'),
+       (1, 1, 6, CURRENT_DATE + 1, 'OPEN');
 
 -- Comment 데이터 생성
 INSERT INTO comment (content, post_id, user_id, created_at, modified_at)
@@ -110,3 +111,14 @@ VALUES (1, 1, 'JOB_POSTING'),
        (2, 1, 'JOB_POSTING'),
        (3, 1, 'JOB_POSTING'),
        (1, 2, 'JOB_POSTING');
+
+INSERT INTO recruitment_user (created_at, modified_at, post_id, site_user_id, status)
+VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, 'APPLIED'),  -- 지원자 1이 게시글 1에 지원
+       (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, 'ACCEPTED'), -- 지원자 2가 게시글 1에 승인
+       (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 3, 'REJECTED'), -- 지원자 3이 게시글 2에 거절
+       (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 1, 'APPLIED'),  -- 지원자 1이 게시글 2에 다시 지원
+       (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 2, 'APPLIED'),  -- 지원자 3이 게시글 2에 지원
+       (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 2, 'APPLIED'), -- 지원자 2가 게시글 4에 지원
+       (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 6, 2, 'APPLIED'), -- 지원자 2가 게시글 6에 지원
+       (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5, 3, 'ACCEPTED'), -- 지원자 3이 게시글 5에 지원
+       (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, 'APPLIED'); -- 지원자 3이 게시글 1에 지원

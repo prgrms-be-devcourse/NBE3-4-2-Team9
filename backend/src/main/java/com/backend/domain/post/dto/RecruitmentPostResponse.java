@@ -1,11 +1,14 @@
 package com.backend.domain.post.dto;
 
+import com.backend.domain.post.entity.RecruitmentStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.querydsl.core.annotations.QueryProjection;
 import java.time.ZonedDateTime;
 import lombok.Builder;
 
 @Builder
-public record PostResponse(
+public record RecruitmentPostResponse(
 	Long id,
 	String subject,
 	String content,
@@ -15,9 +18,9 @@ public record PostResponse(
 	String authorImg,
 	Long voterCount,
 	boolean isVoter,
-	ZonedDateTime createdAt
+	ZonedDateTime createdAt,
 
-	/*// 모집 게시판 전용 필드
+	// 모집 게시판 전용 필드
 	@JsonInclude(value = Include.NON_NULL)
 	Long jobPostingId,
 
@@ -28,10 +31,9 @@ public record PostResponse(
 	RecruitmentStatus recruitmentStatus,
 
 	@JsonInclude(value = Include.NON_NULL)
-	Integer currentAcceptedCount*/
-) {
+	Integer currentAcceptedCount) {
 
 	@QueryProjection
-	public PostResponse {
+	public RecruitmentPostResponse {
 	}
 }

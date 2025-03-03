@@ -1,6 +1,6 @@
 package com.backend.domain.recruitmentUser.entity;
 
-import com.backend.domain.post.entity.Post;
+import com.backend.domain.post.entity.RecruitmentPost;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.global.baseentity.BaseEntity;
 import jakarta.persistence.Column;
@@ -35,7 +35,7 @@ public class RecruitmentUser extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Post post;
+    private RecruitmentPost post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_user_id")

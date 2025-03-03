@@ -8,7 +8,7 @@ import com.backend.domain.post.dto.FreePostRequest;
 import com.backend.domain.post.dto.PostCreateResponse;
 import com.backend.domain.post.dto.PostResponse;
 import com.backend.domain.post.entity.Post;
-import com.backend.domain.post.repository.PostRepository;
+import com.backend.domain.post.repository.post.PostRepository;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.global.exception.GlobalErrorCode;
 import com.backend.global.exception.GlobalException;

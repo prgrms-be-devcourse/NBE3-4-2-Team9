@@ -1,4 +1,4 @@
-package com.backend.domain.post.repository;
+package com.backend.domain.post.repository.post;
 
 import com.backend.domain.post.entity.Post;
 import java.util.Optional;

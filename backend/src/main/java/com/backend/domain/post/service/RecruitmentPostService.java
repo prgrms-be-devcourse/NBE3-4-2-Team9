@@ -10,10 +10,13 @@ import com.backend.domain.jobposting.entity.JobPosting;
 import com.backend.domain.jobposting.repository.JobPostingRepository;
 import com.backend.domain.post.conveter.PostConverter;
 import com.backend.domain.post.dto.PostCreateResponse;
-import com.backend.domain.post.dto.PostResponse;
 import com.backend.domain.post.dto.RecruitmentPostRequest;
-import com.backend.domain.post.entity.Post;
-import com.backend.domain.post.repository.PostRepository;
+import com.backend.domain.post.dto.RecruitmentPostResponse;
+import com.backend.domain.post.entity.RecruitmentPost;
+import com.backend.domain.post.repository.post.PostRepository;
+import com.backend.domain.post.repository.recruitment.RecruitmentPostRepository;
+import com.backend.domain.recruitmentUser.entity.RecruitmentUser;
+import com.backend.domain.recruitmentUser.entity.RecruitmentUserStatus;
 import com.backend.domain.recruitmentUser.repository.RecruitmentUserRepository;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.global.exception.GlobalErrorCode;
@@ -36,6 +39,7 @@ public class RecruitmentPostService {
 	private final CategoryRepository categoryRepository;
 	private final JobPostingRepository jobPostingRepository;
 	private final RecruitmentUserRepository recruitmentUserRepository;
+	private final RecruitmentPostRepository recruitmentPostRepository;
 
 	// ==============================
 	//  1. 비즈니스 로직
@@ -44,12 +48,13 @@ public class RecruitmentPostService {
 	/**
 	 * @param postId   조회할 게시글 아이디
 	 * @param siteUser 로그인한 사용자
-	 * @return {@link PostResponse}
+	 * @return {@link RecruitmentPostResponse}
 	 * @throws GlobalException 게시글이 존재하지 않을 때 예외 발생
 	 */
 	@Transactional(readOnly = true)
-	public PostResponse findById(Long postId, SiteUser siteUser) {
-		return postRepository.findPostResponseById(postId, siteUser.getId())
+	public RecruitmentPostResponse findById(Long postId, SiteUser siteUser) {
+
+		return recruitmentPostRepository.findPostResponseById(postId, siteUser.getId())
 			.orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 	}
 
@@ -74,14 +79,23 @@ public class RecruitmentPostService {
 				recruitmentPostRequest.getJobPostingId())
 			.orElseThrow(() -> new GlobalException(GlobalErrorCode.JOB_POSTING_NOT_FOUND));
 
-		Post post = PostConverter.createPost(
+		RecruitmentPost post = PostConverter.createPost(
 			recruitmentPostRequest,
 			category,
 			siteUser,
 			jobPosting
 		);
 
-		Post savePost = postRepository.save(post);
+		RecruitmentPost savePost = recruitmentPostRepository.save(post);
+
+		//TODO 추후 연관관계 매핑 후 수정할 것
+		RecruitmentUser recruitmentUser = RecruitmentUser.builder()
+			.post(savePost)
+			.siteUser(siteUser)
+			.status(RecruitmentUserStatus.ACCEPTED)
+			.build();
+
+		recruitmentUserRepository.save(recruitmentUser);
 
 		return PostConverter.toPostCreateResponse(savePost.getPostId(),
 			savePost.getCategory().getId());
@@ -97,15 +111,15 @@ public class RecruitmentPostService {
 	 * @throws GlobalException 게시글이 존재하지 않거나, 작성자가 아닐 경우 예외 발생
 	 */
 	@Transactional
-	public PostResponse update(Long postId, RecruitmentPostRequest recruitmentPostRequest,
+	public RecruitmentPostResponse update(Long postId, RecruitmentPostRequest recruitmentPostRequest,
 		SiteUser siteUser) {
 
-		Post findPost = getPost(postId);
+		RecruitmentPost findPost = getPost(postId);
 
 		if (!findPost.getAuthor().getId().equals(siteUser.getId())) {
 			throw new GlobalException(GlobalErrorCode.POST_NOT_AUTHOR);
 		}
-//		validateAuthor(siteUser, findPost);
+		validateAuthor(siteUser, findPost);
 
 		findPost.updatePost(
 			recruitmentPostRequest.getSubject(),
@@ -126,11 +140,11 @@ public class RecruitmentPostService {
 	@Transactional
 	public void delete(Long postId, SiteUser siteUser) {
 
-		Post findPost = getPost(postId);
+		RecruitmentPost findPost = getPost(postId);
 
 		validateAuthor(siteUser, findPost);
 
-		postRepository.deleteById(postId);
+		recruitmentPostRepository.deleteById(postId);
 	}
 
 	// ==============================
@@ -144,7 +158,7 @@ public class RecruitmentPostService {
 	 * @param findPost 조회된 게시글
 	 * @throws GlobalException 사용자가 게시글의 작성자가 아닐 경우 예외 발생
 	 */
-	private static void validateAuthor(SiteUser siteUser, Post findPost) {
+	private static void validateAuthor(SiteUser siteUser, RecruitmentPost findPost) {
 		if (findPost.getAuthor() != siteUser) {
 			throw new GlobalException(GlobalErrorCode.POST_NOT_AUTHOR); // 작성자가 아닐 경우 예외 발생
 		}
@@ -161,8 +175,8 @@ public class RecruitmentPostService {
 	 * @return 조회된 게시글 엔티티
 	 * @throws GlobalException 게시글이 존재하지 않을 경우 예외 발생
 	 */
-	private Post getPost(Long postId) {
-		return postRepository.findByIdFetch(postId)
+	private RecruitmentPost getPost(Long postId) {
+		return recruitmentPostRepository.findByIdFetch(postId)
 			.orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 	}
 

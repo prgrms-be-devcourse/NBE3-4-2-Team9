@@ -4,6 +4,7 @@ TRUNCATE TABLE recruitment_user;
 TRUNCATE TABLE voter;
 TRUNCATE TABLE user_job_skill;
 TRUNCATE TABLE comment;
+TRUNCATE TABLE recruitment_post;
 TRUNCATE TABLE post;
 TRUNCATE TABLE job_posting_job_skill;
 TRUNCATE TABLE job_posting;

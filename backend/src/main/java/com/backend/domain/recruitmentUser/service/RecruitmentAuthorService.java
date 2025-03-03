@@ -8,9 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.backend.domain.post.entity.Post;
+import com.backend.domain.post.entity.RecruitmentPost;
 import com.backend.domain.post.entity.RecruitmentStatus;
-import com.backend.domain.post.repository.PostRepository;
+import com.backend.domain.post.repository.recruitment.RecruitmentPostRepository;
 import com.backend.domain.recruitmentUser.dto.response.RecruitmentUserPageResponse;
 import com.backend.domain.recruitmentUser.entity.RecruitmentUser;
 import com.backend.domain.recruitmentUser.entity.RecruitmentUserStatus;
@@ -35,7 +35,7 @@ public class RecruitmentAuthorService {
 
 	private final MailService mailService;
 	private final RecruitmentUserRepository recruitmentUserRepository;
-	private final PostRepository postRepository;
+	private final RecruitmentPostRepository recruitmentPostRepository;
 
 	// ==============================
 	//  1. 모집 지원 처리 (승인 / 거절)
@@ -51,7 +51,7 @@ public class RecruitmentAuthorService {
 	 */
 	@Transactional
 	public void recruitmentAccept(SiteUser author, Long postId, Long userId) {
-		Post post = validateAuthorAndGetPost(author, postId);
+		RecruitmentPost post = validateAuthorAndGetPost(author, postId);
 		RecruitmentUser recruitmentUser = getRecruitmentUser(userId, postId);
 
 		validateRecruitmentNotClosed(post);
@@ -74,7 +74,7 @@ public class RecruitmentAuthorService {
 	 */
 	@Transactional
 	public void recruitmentReject(SiteUser author, Long postId, Long userId) {
-		Post post = validateAuthorAndGetPost(author, postId);
+		RecruitmentPost post = validateAuthorAndGetPost(author, postId);
 		RecruitmentUser recruitmentUser = getRecruitmentUser(userId, postId);
 
 		validateRecruitmentNotClosed(post);
@@ -98,7 +98,7 @@ public class RecruitmentAuthorService {
 	@Transactional(readOnly = true)
 	public RecruitmentUserPageResponse getAppliedUserList(SiteUser author, Long postId,
 		Pageable pageable) {
-		Post post = validateAuthorAndGetPost(author, postId);
+		RecruitmentPost post = validateAuthorAndGetPost(author, postId);
 
 		Page<RecruitmentUser> appliedUsers = recruitmentUserRepository.findAllByPost_PostIdAndStatus(
 			post.getPostId(), RecruitmentUserStatus.APPLIED, pageable);
@@ -117,7 +117,7 @@ public class RecruitmentAuthorService {
 	@Transactional(readOnly = true)
 	public RecruitmentUserPageResponse getAcceptedUserList(SiteUser author, Long postId,
 		Pageable pageable) {
-		Post post = validateAuthorAndGetPost(author, postId);
+		RecruitmentPost post = validateAuthorAndGetPost(author, postId);
 
 		Page<RecruitmentUser> acceptedUsers = recruitmentUserRepository.findAllByPost_PostIdAndStatus(
 			post.getPostId(), RecruitmentUserStatus.ACCEPTED, pageable);
@@ -151,7 +151,7 @@ public class RecruitmentAuthorService {
 	 * @param post 모집 게시글
 	 * @throws GlobalException 모집이 이미 종료된 경우 예외 발생
 	 */
-	private void validateRecruitmentNotClosed(Post post) {
+	private void validateRecruitmentNotClosed(RecruitmentPost post) {
 		if (post.getRecruitmentStatus() == RecruitmentStatus.CLOSED) {
 			throw new GlobalException(GlobalErrorCode.RECRUITMENT_CLOSED);
 		}
@@ -177,8 +177,8 @@ public class RecruitmentAuthorService {
 	 * @return 게시글 엔티티 (작성자 검증 완료)
 	 * @throws GlobalException 게시글이 존재하지 않거나 작성자가 아닐 경우 예외 발생
 	 */
-	private Post validateAuthorAndGetPost(SiteUser author, Long postId) {
-		Post post = postRepository.findByIdFetch(postId)
+	private RecruitmentPost validateAuthorAndGetPost(SiteUser author, Long postId) {
+		RecruitmentPost post = recruitmentPostRepository.findByIdFetch(postId)
 			.orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
 		if (!post.getAuthor().getId().equals(author.getId())) {
@@ -194,7 +194,7 @@ public class RecruitmentAuthorService {
 	 * @param post 모집 게시글
 	 */
 	@Transactional
-	public void updateRecruitmentStatus(Post post) {
+	public void updateRecruitmentStatus(RecruitmentPost post) {
 		// Status가 null인 경우 OPEN으로 기본 값 설정
 		if (post.getRecruitmentStatus() == null) {
 			post.updateRecruitmentStatus(RecruitmentStatus.OPEN);
@@ -205,7 +205,7 @@ public class RecruitmentAuthorService {
 			post.updateRecruitmentStatus(RecruitmentStatus.CLOSED);
 		}
 
-		postRepository.save(post);
+		recruitmentPostRepository.save(post);
 
 		// 모집 상태 Closed 된 게시글에서 ACCEPTED 상태의 유저 이메일 리스트 반환
 		List<String> emailList = recruitmentUserRepository.findAcceptedByClosed(post.getPostId())

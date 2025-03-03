@@ -1,16 +1,14 @@
 package com.backend.domain.recruitmentUser.repository;
 
+import com.backend.domain.recruitmentUser.entity.RecruitmentUser;
+import com.backend.domain.recruitmentUser.entity.RecruitmentUserStatus;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import com.backend.domain.recruitmentUser.entity.RecruitmentUser;
-import com.backend.domain.recruitmentUser.entity.RecruitmentUserStatus;
 
 /**
  * 모집 지원자 관련 데이터 처리 리포지토리
@@ -32,6 +30,7 @@ public interface RecruitmentUserRepository extends JpaRepository<RecruitmentUser
 		    JOIN FETCH su.jobSkills
 		    WHERE p.postId = :postId AND su.id = :userId
 		""")
+	//TODO 언더바 추후 제거할 것
 	Optional<RecruitmentUser> findByPost_PostIdAndSiteUser_Id(
 		@Param("postId") Long postId,
 		@Param("userId") Long userId

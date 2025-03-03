@@ -1,21 +1,24 @@
 package com.backend.domain.recruitmentUser.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.backend.domain.post.dto.PostPageResponse;
-import com.backend.domain.post.entity.Post;
+import com.backend.domain.post.entity.RecruitmentPost;
 import com.backend.domain.post.entity.RecruitmentStatus;
-import com.backend.domain.post.repository.PostRepository;
-import com.backend.domain.recruitmentUser.dto.response.RecruitmentPostResponse;
+import com.backend.domain.post.repository.post.PostRepository;
+import com.backend.domain.post.repository.recruitment.RecruitmentPostRepository;
+import com.backend.domain.recruitmentUser.dto.response.RecruitmentUserPostResponse;
 import com.backend.domain.recruitmentUser.entity.RecruitmentUser;
 import com.backend.domain.recruitmentUser.entity.RecruitmentUserStatus;
 import com.backend.domain.recruitmentUser.repository.RecruitmentUserRepository;
 import com.backend.domain.user.entity.SiteUser;
 import com.backend.global.exception.GlobalErrorCode;
 import com.backend.global.exception.GlobalException;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * RecruitmentUserService 유저 모집 신청 및 모집 관련 조회를 담당하는 서비스 클래스입니다.
@@ -28,6 +31,7 @@ public class RecruitmentUserService {
 
     private final RecruitmentUserRepository recruitmentUserRepository;
     private final PostRepository postRepository;
+    private final RecruitmentPostRepository recruitmentPostRepository;
 
     // ==============================
     //  1. 비즈니스 로직
@@ -43,7 +47,7 @@ public class RecruitmentUserService {
      */
     @Transactional
     public void saveRecruitment(SiteUser siteUser, Long postId) {
-        Post post = getPost(postId);
+        RecruitmentPost post = getPost(postId);
 
         // 모집 신청 가능 여부 검증
         checkRecruitmentCondition(siteUser, post);
@@ -68,7 +72,7 @@ public class RecruitmentUserService {
      */
     @Transactional
     public void cancelRecruitment(SiteUser siteUser, Long postId) {
-        Post post = getPost(postId);
+        RecruitmentPost post = getPost(postId);
 
         // 모집이 종료된 경우 취소 불가
         validateRecruitmentNotClosed(post);
@@ -89,7 +93,7 @@ public class RecruitmentUserService {
      * @param pageable 페이징 정보
      * @return 사용자가 특정 상태로 참여한 모집 게시글 목록 (Page<PostResponseDto>)
      */
-    public RecruitmentPostResponse getAcceptedPosts(
+    public RecruitmentUserPostResponse getAcceptedPosts(
             SiteUser siteUser,
             String status,
             Pageable pageable) {
@@ -99,10 +103,11 @@ public class RecruitmentUserService {
             throw new GlobalException(GlobalErrorCode.RECRUITMENT_STATUS_NOT_SUPPORT);
         }
 
+        //TODO 추후 RecruitmentPostRepository로 로직 이동 후 수정
         Page<PostPageResponse> posts = postRepository
             .findRecruitmentAll(siteUser.getId(), recruitmentUserStatus, pageable);
 
-        return new RecruitmentPostResponse(recruitmentUserStatus, posts);
+        return new RecruitmentUserPostResponse(recruitmentUserStatus, posts);
     }
 
     // ==============================
@@ -127,7 +132,7 @@ public class RecruitmentUserService {
      * @param post 모집 게시글
      * @throws GlobalException 모집이 이미 종료된 경우 예외 발생
      */
-    private void validateRecruitmentNotClosed(Post post) {
+    private void validateRecruitmentNotClosed(RecruitmentPost post) {
         if (post.getRecruitmentStatus() == RecruitmentStatus.CLOSED) {
             throw new GlobalException(GlobalErrorCode.RECRUITMENT_CLOSED);
         }
@@ -140,7 +145,7 @@ public class RecruitmentUserService {
      * @param post     모집 게시글
      * @throws GlobalException 위 조건 중 하나라도 만족할 경우 예외 발생
      */
-    private void checkRecruitmentCondition(SiteUser siteUser, Post post) {
+    private void checkRecruitmentCondition(SiteUser siteUser, RecruitmentPost post) {
         // 중복 지원 여부 확인
         if (isAlreadyApplied(siteUser, post.getPostId())) {
             throw new GlobalException(GlobalErrorCode.ALREADY_RECRUITMENT);
@@ -174,8 +179,8 @@ public class RecruitmentUserService {
      * @return 조회된 모집 게시글 (Post 엔티티)
      * @throws GlobalException 게시글이 존재하지 않을 경우 예외 발생
      */
-    private Post getPost(Long postId) {
-        return postRepository.findByIdFetch(postId)
+    private RecruitmentPost getPost(Long postId) {
+        return recruitmentPostRepository.findByIdFetch(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
     }
 }

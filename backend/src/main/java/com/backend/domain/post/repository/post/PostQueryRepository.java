@@ -1,4 +1,4 @@
-package com.backend.domain.post.repository;
+package com.backend.domain.post.repository.post;
 
 import static com.backend.domain.comment.entity.QComment.comment;
 import static com.backend.domain.post.entity.QPost.post;
@@ -109,8 +109,7 @@ public class PostQueryRepository {
 				new QPostResponse(post.postId, post.subject, post.content, post.category.id,
 					post.author.id.eq(siteUserId), post.author.name,
 					post.author.profileImg,
-					voter.countDistinct(), voter.siteUser.id.eq(siteUserId), post.createdAt,
-					post.jobPosting.id, post.numOfApplicants, post.recruitmentStatus, recruitmentUser.countDistinct().intValue()))
+					voter.countDistinct(), voter.siteUser.id.eq(siteUserId), post.createdAt))
 			.from(post)
 			.leftJoin(post.category)
 			.leftJoin(post.author)
@@ -118,8 +117,7 @@ public class PostQueryRepository {
 			.leftJoin(recruitmentUser)
 			.on(recruitmentUser.post.postId.eq(postId))
 			.groupBy(post.postId, post.subject, post.content, post.category.id, post.author.id,
-				post.author.name, post.author.profileImg, voter.siteUser.id, post.createdAt,
-				post.numOfApplicants, post.recruitmentStatus)
+				post.author.name, post.author.profileImg, voter.siteUser.id, post.createdAt)
 			.where(post.postId.eq(postId))
 			.fetchOne();
 

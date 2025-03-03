@@ -1,16 +1,14 @@
 package com.backend.domain.post.service;
 
+import com.backend.domain.post.dto.PostPageResponse;
+import com.backend.domain.post.repository.post.PostRepository;
+import com.backend.domain.post.util.PostSearchCondition;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.backend.domain.post.dto.PostPageResponse;
-import com.backend.domain.post.repository.PostRepository;
-import com.backend.domain.post.util.PostSearchCondition;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
